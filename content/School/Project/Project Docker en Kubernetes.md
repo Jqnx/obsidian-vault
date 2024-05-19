@@ -1,3 +1,19 @@
+---
+title: Project Docker en Kubernetes
+draft: false
+tags:
+  - School
+  - Linux
+  - Docker
+  - k8s
+  - containerd
+  - github-actions
+  - cert-manager
+  - metallb
+  - istio
+  - git
+---
+
 #todo
 - [ ]  Add first page picture
 - [ ] Add table of contents when done with entire project
@@ -356,8 +372,6 @@ kubectl label namespace default istio-injection=enabled
 
 
 - [ ] cert-manager
-- [ ] kubernetes dashboard?
-- [ ] kubernetes-dns?
 
 ## 7. Setup website
 - [ ] Dockerfile
