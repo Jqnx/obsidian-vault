@@ -2,9 +2,10 @@
 title: Project Docker en Kubernetes
 draft: false
 tags:
-  - School
-  - Linux
-  - Docker
+  - school
+  - project
+  - linux
+  - docker
   - k8s
   - containerd
   - github-actions
@@ -18,13 +19,12 @@ tags:
 - [ ]  Add first page picture
 - [ ] Add table of contents when done with entire project
 - [ ] [[#2.4 VMs configureren]]
-- [ ] [[#4. Kubeadm, kubectl en kubelet installeren]]
 
 # **Project Docker en Kubernetes**
 
 
 
-
+---
 ## 1. Router
 ### 1.1 Opzoeken handleiding
 De handleiding is terug te vinden op deze link:
@@ -54,7 +54,7 @@ Als we klaar zijn met de setup wizard moeten we onze computer terug zetten op DH
 ## 2. ESXi
 ### 2.1 ESXi installeren
 
-We installeren ESXi op dezelfde manier dat we bijna elke andere linux distributie installeren.
+De ESXi installatie is vrij standaard:
 
 1. Opstarten vanaf USB
 2. EULA accepteren
@@ -124,35 +124,22 @@ Aangezien ik persoonlijk liever SSH gebruik dan het ESXi controle paneel voeg ik
 
 ## 3. Gemeenschappelijke configuratie
 
-### 3.1 Uitzetten SWAP
+### 3.1 Docker
 
-Eerst gaan we SWAP uitzetten aangezien kubelet het niet ondersteund.
+#### 3.1.1 Wat is docker?
 
-```shell
-sudo swapoff -a
-```
+Docker is een open-source platform voor het ontwikkelen, verzenden en draaien van applicaties. Dit gebeurd aan de hand van *containers*, *images* en *registries*. 
+- Een *container* is een geïsoleerde omgeving om code uit te testen/applicaties te draaien. Je kan het een beetje bekijken als een mini VM of een geïsoleerde applicatie.
+- Een *image* is een gestandaardiseerd pakket dat alle bestanden, libraries en configuratie bevat. Het is een soort sjabloon met instructies voor het maken van *containers*.
+- Een *registry* is waar je deze images kan bewaren. Je hebt publieke en privé registries.
 
-En we commenten deze lijn uit in ons /etc/fstab bestand.
-
-```ini
-#/swap.img      none    swap    sw      0       0
-```
-
-> Sources:
-> [How do I disable swap?](https://askubuntu.com/questions/214805/how-do-i-disable-swap)
-
-### 3.2 Docker
-
-#### 3.2.1 Wat is docker?
-
-Docker is een open-source platform voor het ontwikkelen, verzenden en draaien van applicaties. Dit gebeurd aan de hand van containers, images en registries. 
-- Een container is een geïsoleerde omgeving om code uit te testen/applicaties te draaien.
-- Een image is een gestandaardiseerd pakket dat alle bestanden, libraries en configuratie bevat.
-- Een registry is waar je deze images kan bewaren/uploaden om ze te delen met de wereld en ook waar je al reeds gemaakte images kan vinden/downloaden.
+*Containers* zijn vaak kleiner en gebruiken minder resources dan virtuele machines, hierdoor zijn ze een efficiënter alternatief. Door de *image* is de inhoud van een *container* ook altijd hetzelfde waardoor je dit in bijna elke omgeving kan gebruiken e.g., op verschillende OS distributies of bij verschillende cloud providers. Dit heeft er ook voor gezorgd dat applicaties die vroeger uit meerdere onderdelen bestonden nu in verschillende kleinere stukken zijn gedeeld waar dat elk deel in zijn eigen *container* draait, het is dus meer dynamisch en modulair.
 
 ![[Docker-overview.png]]
 
-Erbovenop heeft docker ook ingebouwde netwerk capaciteiten.
+Docker wordt voornamelijk gebruikt in continuous integration and continuous delivery (CI/CD) workflows. Dit heeft als doel om het testen en implementeren van code sneller en automatisch te maken.
+
+Bovendien heeft docker ook ingebouwde netwerk capaciteiten.
 
 > Sources:
 > [Docker overview | Docker Docs](https://docs.docker.com/get-started/overview/)
@@ -161,12 +148,11 @@ Erbovenop heeft docker ook ingebouwde netwerk capaciteiten.
 > [What is an image? | Docker Docs](https://docs.docker.com/guides/docker-concepts/the-basics/what-is-an-image/)
 > [What is a registry? | Docker Docs](https://docs.docker.com/guides/docker-concepts/the-basics/what-is-a-registry/)
 
-#### 3.2.2 Docker installeren
+#### 3.1.2 Docker installeren
 
 Om docker te installeren voeren we de volgende commando's uit.
 
 Eerst voegen we de docker apt repository toe:
-
 ```shell
 # Add Docker's official GPG key:
 sudo apt-get update
@@ -184,12 +170,11 @@ sudo apt-get update
 ```
 
 Vervolgens kunnen we de docker pakketten installeren:
-
 ```shell
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
-We gaan ook instellen dan docker en containerd automatisch opstarten:
+We gaan ook instellen dat docker en containerd automatisch opstarten:
 ```shell
 sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
@@ -204,33 +189,33 @@ sudo usermod -aG docker $USER
 >[Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository)
 >[Linux post-installation steps for Docker Engine](https://docs.docker.com/engine/install/linux-postinstall)
 
->[!NOTE] 
->Er is ook een convenience script die je kan gebruiken, maar dat wordt afgeraden buiten development.
+>[!info]  Convenience Script
+>Er is ook een convenience script dat je kan gebruiken, maar dat wordt afgeraden buiten development.
 
-### 3.3 Containerd
-#### 3.3.1 Wat is containerd?
-Containerd is eigenlijk de onderliggende laag onder docker die alles uitvoerd zoals images downloaden, netwerken beheren en containers draaien adhv runc.
+### 3.2 Containerd
+#### 3.2.1 Wat is containerd?
+Containerd is eigenlijk de onderliggende laag onder docker die alles uitvoerd zoals images downloaden, netwerken beheren en containers draaien aan de hand van runc.
 
 ![[docker-stack.png]]
 
-#### 3.3.2 Waarom containerd over Docker als CRI
+#### 3.2.2 Waarom containerd over Docker als CRI
 Origineel moest je docker gebruiken voor kubernetes maar sinds de release van de CRI (Container Runtime Interface) API is de ondersteuning voor docker stop gezet en moet je hiervoor een 3de partij hun applicatie (cri-dockerd) gebruiken. De CRI ondersteund van nature containerd en CRI-O. En aangezien dat docker al containerd gebruikt heb ik besloten om containerd te gebruiken ipv CRI-O en cri-dockerd.
 
 > Sources:
 > [The Differences between docker and containerd](https://vineetcic.medium.com/the-differences-between-docker-containerd-cri-o-and-runc-a93ae4c9fdac#:~:text=containerd%20is%20a%20high%2Dlevel,processes%20we%20call%20'containers'.)
 
-#### 3.3.3 Containerd instellen
+#### 3.2.3 Containerd instellen
 
 Aangezien containerd een onderdeel is van Docker wordt het automatisch mee geinstalleerd als we ook docker installeren. Maar het heeft wat extra aanpassingen nodig om de systemd driver te gebruiken voor kubernetes.
 
-Eerst starten we met een default config aan te maken:
-
+Eerst maken we een tijdelijke standaard config aan en maken we een backup van de oude config:
 ```shell
 containerd config default > /tmp/config.toml
+sudo cp /etc/containerd/config.toml /etc/containerd/config.toml.bak
 ```
 
-Dan veranderen we SystemdCgroup = false naar SystemdCgroup = true:
-```vim 
+Dan veranderen we `SystemdCgroup = false` naar `SystemdCgroup = true`:
+```toml title="etc/containerd/config.toml"
 [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
   ...
   [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
@@ -255,28 +240,63 @@ rm /tmp/config.toml
 >Sources:
 >[Container Runtimes | Kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd)
 
-### 3.4 Kubeadm, kubectl en kubelet installeren
-- [ ] install kubeadm, kubectl en kubelet
+### 3.3 Kubernetes
 
+#### 3.3.1 Wat is kubernetes?
+
+Deze docker containers zijn handig maar je kan ze enkel lokaal beheren, dus als je zoals in een productie omgeving meerdere machines hebt die allemaal docker containers draaien kan dit zeer verwarrend worden. Dit is waar *kubernetes* ons kan helpen: "*Kubernetes* is een open-source orkestratieplatform voor het automatiseren van het inzetten, schalen en beheren van software".
+
+*Kubernetes* werkt met clusters, dus een groepering van systemen of nodes. Clusters worden gebruikt om *high-availability* aan te bieden, dit betekent dat je applicatie/service operationeel kan blijven zelfs als er een of meer nodes uitvallen. Hoe bestendig je systeem is is afhankelijk van de hoeveelheid nodes je in je cluster hebt.
+
+#todo 
+- [ ] how kubernetes works
+- [ ] how kubernetes uses containers
+- [ ] a few kubernetes concepts e.g. pods, service, ingress?, deployments,replicas
+- [ ] how kubernetes does loadbalancing
+
+
+
+#### 3.3.2 Installeren kubeadm, kubelet en kubectl
+
+#### 3.3.2.1 Uitzetten SWAP
+
+Eerst gaan we SWAP uitzetten aangezien kubelet het niet ondersteund.
 ```shell
+sudo swapoff -a
+```
+
+En we commenten deze lijn uit in ons /etc/fstab bestand.
+```ini title="etc/fstab"
+#/swap.img      none    swap    sw      0       0
+```
+
+> Sources:
+> [How do I disable swap?](https://askubuntu.com/questions/214805/how-do-i-disable-swap)
+
+#### 3.3.2.2 Installeren pakketten
+
+Als we kubeadm gaan gebruiken om onze cluster op te zetten moeten we dit eerst installeren samen met de kubelet en kubectl pakketten.
+
+We starten hiermee door de kubernetes apt repository toe te voegen:
+```shell
+# Install dependencies
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg
-```
 
-```shell
+# Add the kubernetes GPG key
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-```
 
-```shell
+# Add the repository to apt sources
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 ```
 
-
+Dan installeren we de kubelet, kubeadm en kubectl pakketten en houden we de versies bij aangezien deze best hetzelfde is bij alle 3.
 ```shell
 sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
+Als laatste starten we de kubelet service en zorgen ervoor dat deze ook automatisch opstart.
 ```shell
 sudo systemctl enable --now kubelet
 ```
@@ -289,7 +309,7 @@ sudo systemctl enable --now kubelet
 sudo vim /etc/kubernetes/kubeadm-config.yaml
 ```
 
-```yaml
+```yaml title="etc/kubernetes/kubeadm-config.yaml"
 ---
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: InitConfiguration
@@ -345,7 +365,7 @@ kubeadm join cluster-endpoint.p.kaliki.eu:6443 --token hwlqyf.z8kl8mmido742chb -
 ## 6. Configuratie kubernetes cluster
 
 ```shell
-git clone https://token@github.com/Jqnx/k8s-manifests-priv
+git clone https://<personal-access-token>@github.com/Jqnx/k8s-manifests-priv
 ```
 
 - [ ] Metallb
@@ -408,6 +428,8 @@ https://docs.docker.com/engine/install/linux-postinstall
 https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd
 
 ### Kubernetes (kubeadm, kubectl en kubelet)
+[Overview | Kubernetes](https://kubernetes.io/docs/concepts/overview)
+[Installing kubeadm | Kubernetes](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
 
 ### MetalLB
 https://metallb.org/installation/

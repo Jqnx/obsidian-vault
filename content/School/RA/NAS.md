@@ -1,3 +1,14 @@
+---
+title: NAS
+draft: true
+tags:
+  - school
+  - randapparatuur
+  - windows
+  - NAS
+---
+
+
 # RANDAPPARATUUR
 
 ## NAS

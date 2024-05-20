@@ -1,3 +1,15 @@
+---
+title: HomeAssistant
+draft: false
+tags:
+  - school
+  - onderhoud-en-herstellingen
+  - homeassistantos
+  - duckdns
+  - lets-encrypt
+  - nginx-proxy
+  - philips-hue
+---
 # 1. configuration.yaml
 
 requires *File Editor* add-on

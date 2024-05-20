@@ -1,3 +1,13 @@
+---
+title: IPv4
+draft: false
+tags:
+  - school
+  - netwerktechnologie
+  - networking
+  - ipv4
+---
+
 ## Wat is IPv4?
 
 IPv4 is de meest gebruikte versie van het **Internet Protocol**. Het bestaat uit **32-bit** of 2<sup>32</sup>.
@@ -33,8 +43,7 @@ DF = 0 (fragment), 1 (dont fragment)
 MF = 1 bij elk fragment buiten het laatste fragment.
 
 ### Fragment Offset
-Dit veld dient ook voor fragmentatie. Het geeft aan waar in de datagram het fragment thuis hoort. Dit veld is **13 bits** groot. Bij het eerste fragment is dit altijd 0 en bij de anderen moet dit altijd deelbaar zijn door 8.
-[[IPv4 Fragmentatie#Fragment Offset berekenen|Fragment Offset Berekenen]]
+Dit veld dient ook voor fragmentatie. Het geeft aan waar in de datagram het fragment thuis hoort. Dit veld is **13 bits** groot. Bij het eerste fragment is dit altijd 0 en bij de anderen moet dit altijd deelbaar zijn door 8. ^[[[IPv4 Fragmentatie#Fragment Offset berekenen|Fragment Offset Berekenen]]]
 
 ### TTL of Time to Live
 Dit veld geeft aan bij hoeveel routers het voorbij kan passeren (hoppen) voor dat het gedumped wordt. Dit veld is **8 bit** groot.
