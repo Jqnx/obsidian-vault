@@ -111,7 +111,7 @@ We breiden onze standaard partitie uit van `14.996G` naar `29.996G`. Voor de res
 
 ![[Ubuntu Setup 2 - Disk Partitioning.png]]
 
-Hier geven we onze gebruikers info in.
+Hier geven we onze gebruikers info en hostname in.
 
 ![[Ubuntu Setup 3 - User Creation.png]]
 
@@ -148,6 +148,7 @@ Bovendien heeft docker ook ingebouwde netwerk capaciteiten.
 
 >[!tip] Docker Desktop
 >Er bestaat ook een Docker Desktop applicatie met een GUI.
+>[Docker Desktop: The #1 Containerization Tool for Developers | Docker](https://www.docker.com/products/docker-desktop/)
 
 > Sources:
 > [Docker overview | Docker Docs](https://docs.docker.com/get-started/overview/)
@@ -202,7 +203,7 @@ sudo usermod -aG docker $USER
 
 ### 3.2 Containerd
 #### 3.2.1 Wat is containerd?
-Containerd is eigenlijk de onderliggende laag onder de docker daemon(`dockerd`). Het is de container runtime waar docker gebruik van maakt en waar kubernetes gebruik van kan maken.
+Containerd is eigenlijk de onderliggende laag onder de docker daemon(`dockerd`). Het is de container runtime waar docker gebruik van maakt.
 
 Een container runtime maakt de container en zorgt dat het blijft draaien, het beheerd ook de hoeveelheid resources een container gebruikt. Het is een tussenstap tussen de host OS en de container engine, e.g. docker of kubernetes.
 
@@ -214,10 +215,22 @@ Een container runtime maakt de container en zorgt dat het blijft draaien, het be
 > [What are Container Runtimes? Types and Popular Runtime Tools | Wiz](https://www.wiz.io/academy/container-runtimes)
 
 #### 3.2.2 Waarom containerd over Docker als CRI
-Origineel moest je docker gebruiken voor kubernetes maar sinds de release van de CRI (Container Runtime Interface) API is de ondersteuning voor docker stop gezet en moet je hiervoor een 3de partij hun applicatie (cri-dockerd) gebruiken. De CRI ondersteund van nature containerd en CRI-O. En aangezien dat docker al containerd gebruikt heb ik besloten om containerd te gebruiken ipv CRI-O en cri-dockerd.
+Origineel moest je Docker gebruiken als container runtime voor kubernetes, maar sinds release v1.24 is dit niet meer mogelijk. Ze hebben deze ondersteuning stop gezet ten gunste van container runtimes die hun eigen CRI technologie ondersteunen. Dit zijn momenteel:
+- containerd
+- cri-o
+- docker (`cri-dockerd`)
+- mirantis container runtime (MCR)
+
+Dit wilt **niet** zeggen dat je geen Docker images kan gebruiken met kubernetes, aangezien deze  gemaakt worden volgens een standaard (OCI) die deze container runtimes allemaal ondersteund.
+
+Sinds dat containerd al wordt meegeleverd met Docker heb ik hiervoor gekozen, CRI-O is een goed alternatief aangezien dit speciaal gemaakt is voor kubernetes.  Voor Docker te gebruiken heb je nu een extra applicatie (`cri-dockerd`) nodig. Mirantis Container Runtime (MCR) is ontwikkeld door Mirantis Inc., dit maakt gebruikt van het `cri-dockerd` component sinds dat dit van dezelfde ontwikkelaars is.
+
+%%Origineel moest je docker gebruiken voor kubernetes maar sinds release v1.24 van de CRI (Container Runtime Interface) API is de ondersteuning voor docker stop gezet en moet je hiervoor een 3de partij hun applicatie (cri-dockerd) gebruiken. De CRI ondersteund van nature containerd en CRI-O. En aangezien dat docker al containerd gebruikt heb ik besloten om containerd te gebruiken ipv CRI-O en cri-dockerd.%%
 
 > Sources:
 > [The Differences between docker and containerd](https://vineetcic.medium.com/the-differences-between-docker-containerd-cri-o-and-runc-a93ae4c9fdac#:~:text=containerd%20is%20a%20high%2Dlevel,processes%20we%20call%20'containers'.)
+> [Container Runtimes | Kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/)
+> [Updated: Dockershim Removal FAQ | Kubernetes](https://kubernetes.io/blog/2022/02/17/dockershim-faq/)
 
 #### 3.2.3 Containerd instellen
 
@@ -266,10 +279,12 @@ rm /tmp/config.toml
 ### 3.3 Kubernetes
 
 #### 3.3.1 Wat is kubernetes?
+*Kubernetes* is een open-source orkestratieplatform voor het automatiseren van het inzetten, schalen en beheren van software. Het biedt *High-Availability* aan aan de hand van *clusters* en *load-balancing*.
 
-Deze docker containers zijn handig maar je kan ze enkel lokaal beheren, dus als je zoals in een productie omgeving meerdere machines hebt die allemaal docker containers draaien kan dit zeer verwarrend worden. Dit is waar *kubernetes* ons kan helpen: "*Kubernetes* is een open-source orkestratieplatform voor het automatiseren van het inzetten, schalen en beheren van software".
 
-*Kubernetes* werkt met clusters, dus een groepering van systemen of nodes. Clusters worden gebruikt om *high-availability* aan te bieden, dit betekent dat je applicatie/service operationeel kan blijven zelfs als er een of meer nodes uitvallen. Hoe bestendig je systeem is is afhankelijk van de hoeveelheid nodes je in je cluster hebt.
+%%Deze docker containers zijn handig maar je kan ze enkel lokaal beheren, dus als je zoals in een productie omgeving meerdere machines hebt die allemaal docker containers draaien kan dit zeer verwarrend worden. Dit is waar *kubernetes* ons kan helpen: "*Kubernetes* is een open-source orkestratieplatform voor het automatiseren van het inzetten, schalen en beheren van software".
+
+*Kubernetes* werkt met clusters, dus een groepering van systemen of nodes. Clusters worden gebruikt om *high-availability* aan te bieden, dit betekent dat je applicatie/service operationeel kan blijven zelfs als er een of meer nodes uitvallen. Hoe bestendig je systeem is is afhankelijk van de hoeveelheid nodes je in je cluster hebt.%%
 
 #todo 
 - [ ] how kubernetes works
@@ -277,6 +292,8 @@ Deze docker containers zijn handig maar je kan ze enkel lokaal beheren, dus als 
 - [ ] a few kubernetes concepts e.g. pods, service, ingress?, deployments,replicas
 - [ ] how kubernetes does loadbalancing
 
+> Sources:
+> [Overview | Kubernetes](https://kubernetes.io/docs/concepts/overview/)
 
 
 #### 3.3.2 Installeren kubeadm, kubelet en kubectl
