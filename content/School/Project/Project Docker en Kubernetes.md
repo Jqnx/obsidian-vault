@@ -18,7 +18,7 @@ tags:
 #todo
 - [ ]  Add first page picture
 - [ ] Add table of contents when done with entire project
-- [ ] [[#2.4 VMs configureren]]
+- [x] [[#2.4 VMs configureren]]
 
 # **Project Docker en Kubernetes**
 
@@ -31,17 +31,17 @@ De handleiding is terug te vinden op deze link:
 https://dl.ubnt.com/guides/edgemax/EdgeRouter_ER-X_QSG.pdf
 
 ### 1.2 Instellen statisch IP
-We starten met de router te resetten door de reset knop 10 seconden lang ingedrukt te houden tot de *eth4* LED begint te knipperen. We verbinden dan onze ethernet kabel met de *eth0/PoE In* poort op de router. Volgens de handleiding bevind de router zich standaard in het *192.168.1.x* subnet. We zullen dus onze computer een statisch IP-adres instellen in dit subnet.
+We starten met de router te resetten door de reset knop 10 seconden lang ingedrukt te houden tot de `eth4` LED begint te knipperen. We verbinden dan onze ethernet kabel met de `eth0/PoE In` poort op de router. Volgens de handleiding bevind de router zich standaard in het `192.168.1.x` subnet. We zullen dus onze computer een statisch IP-adres instellen in dit subnet.
 
 ![[1 - Router - Static IP Windows.png]]
 ### 1.3 Setup Wizard
 #### 1.3.1 WAN configuratie
-We stellen hier het statisch IP-adres in dat we gekregen hebben aan het begin van de module. In dit geval is dit: *192.168.25.168/24*
+We stellen hier het statisch IP-adres in dat we gekregen hebben aan het begin van de module. In dit geval is dit: `192.168.25.168/24`
 
 ![[2 - Router - WAN Config.png]]
 
 #### 1.3.2 LAN configuratie
-Vervolgens stellen we het subnet in dat we gekregen hebben in de opgave: *192.168.10.0/24* , we zetten de DHCP server ook aan.
+Vervolgens stellen we het subnet in dat we gekregen hebben in de opgave: `192.168.10.0/24` , we zetten de DHCP server ook aan.
 
 ![[3 - Router - LAN Config.png]]
 
@@ -102,13 +102,12 @@ Vervolgens geven we de hardware van onze VM in. We selecteren ook onze ISO hier.
 
 ![[ESXI 3 - hardware.png]]
 ### 2.4 VMs configureren
-#todo 
-- [x] 2.4 retake screenshot of ipv4 config
-- [x] 2.4 retake screenshot of disk partitioning
+
+Zo ziet onze IP configuratie er uit. Alle is hetzelfde voor alle 4 VMs dat we aanmaken buiten het `Address: 192.168.10.20` veld in de IP Configuratie.
 
 ![[Ubuntu Setup 1 - IPv4 Config.png]]
 
-
+We breiden onze standaard partitie uit van `14.996G` naar `29.996G`. Voor de rest passen we hier niets aan.
 
 ![[Ubuntu Setup 2 - Disk Partitioning.png]]
 
@@ -129,17 +128,26 @@ Aangezien ik persoonlijk liever SSH gebruik dan het ESXi controle paneel voeg ik
 #### 3.1.1 Wat is docker?
 
 Docker is een open-source platform voor het ontwikkelen, verzenden en draaien van applicaties. Dit gebeurd aan de hand van *containers*, *images* en *registries*. 
-- Een *container* is een geïsoleerde omgeving om code uit te testen/applicaties te draaien. Je kan het een beetje bekijken als een mini VM of een geïsoleerde applicatie.
+- Een *container* is een geïsoleerde omgeving om code uit te testen/applicaties te draaien, i.e. een mini VM of een geïsoleerde applicatie.
 - Een *image* is een gestandaardiseerd pakket dat alle bestanden, libraries en configuratie bevat. Het is een soort sjabloon met instructies voor het maken van *containers*.
-- Een *registry* is waar je deze images kan bewaren. Je hebt publieke en privé registries.
+- Een *registry* is waar je deze images kan bewaren en delen. Je hebt publieke en privé registries.
 
-*Containers* zijn vaak kleiner en gebruiken minder resources dan virtuele machines, hierdoor zijn ze een efficiënter alternatief. Door de *image* is de inhoud van een *container* ook altijd hetzelfde waardoor je dit in bijna elke omgeving kan gebruiken e.g., op verschillende OS distributies of bij verschillende cloud providers. Dit heeft er ook voor gezorgd dat applicaties die vroeger uit meerdere onderdelen bestonden nu in verschillende kleinere stukken zijn gedeeld waar dat elk deel in zijn eigen *container* draait, het is dus meer dynamisch en modulair.
+%%*Containers* zijn vaak kleiner en gebruiken minder resources dan virtuele machines, hierdoor zijn ze een efficiënter alternatief. Door de *image* is de inhoud van een *container* ook altijd hetzelfde waardoor je dit in bijna elke omgeving kan gebruiken e.g., op verschillende OS distributies of bij verschillende cloud providers. Dit heeft er ook voor gezorgd dat applicaties die vroeger uit meerdere onderdelen bestonden nu in verschillende kleinere stukken zijn gedeeld waar dat elk deel in zijn eigen *container* draait, het is dus meer dynamisch en modulair.%%
 
 ![[Docker-overview.png]]
 
-Docker wordt voornamelijk gebruikt in continuous integration and continuous delivery (CI/CD) workflows. Dit heeft als doel om het testen en implementeren van code sneller en automatisch te maken.
+Docker als een applicatie maakt gebruik van de Docker client (`docker`) en de Docker daemon (`dockerd`).
+- De docker client (`docker`) is de hoofd manier waarop je docker zou gebruiken. Dit biedt de commando's aan die je gebruikt, e.g. `docker run`, `docker build`, `docker ps`, `docker logs`, etc.
+- De docker daemon (`dockerd`) is backend waar dat de docker client je commando's naar toe stuurt. Dit is het deel van docker dat alles uitvoert en beheerd, e.g. images, containers, netwerken, en volumes.
+
+![[Docker-architecture.png]]
+
+Docker is een zeer krachtige tool voor programmeurs en wordt voornamelijk gebruikt in continuous integration and continuous delivery (CI/CD) pipelines. Dit heeft als doel om het testen en implementeren van code sneller en automatisch te maken.
 
 Bovendien heeft docker ook ingebouwde netwerk capaciteiten.
+
+>[!tip] Docker Desktop
+>Er bestaat ook een Docker Desktop applicatie met een GUI.
 
 > Sources:
 > [Docker overview | Docker Docs](https://docs.docker.com/get-started/overview/)
@@ -194,9 +202,16 @@ sudo usermod -aG docker $USER
 
 ### 3.2 Containerd
 #### 3.2.1 Wat is containerd?
-Containerd is eigenlijk de onderliggende laag onder docker die alles uitvoerd zoals images downloaden, netwerken beheren en containers draaien aan de hand van runc.
+Containerd is eigenlijk de onderliggende laag onder de docker daemon(`dockerd`). Het is de container runtime waar docker gebruik van maakt en waar kubernetes gebruik van kan maken.
 
-![[docker-stack.png]]
+Een container runtime maakt de container en zorgt dat het blijft draaien, het beheerd ook de hoeveelheid resources een container gebruikt. Het is een tussenstap tussen de host OS en de container engine, e.g. docker of kubernetes.
+
+![[Docker-stack2.png]]
+%%![[docker-stack.png]]%%
+
+> Sources:
+> [containerd vs. Docker | Docker](https://www.docker.com/blog/containerd-vs-docker/)
+> [What are Container Runtimes? Types and Popular Runtime Tools | Wiz](https://www.wiz.io/academy/container-runtimes)
 
 #### 3.2.2 Waarom containerd over Docker als CRI
 Origineel moest je docker gebruiken voor kubernetes maar sinds de release van de CRI (Container Runtime Interface) API is de ondersteuning voor docker stop gezet en moet je hiervoor een 3de partij hun applicatie (cri-dockerd) gebruiken. De CRI ondersteund van nature containerd en CRI-O. En aangezien dat docker al containerd gebruikt heb ik besloten om containerd te gebruiken ipv CRI-O en cri-dockerd.
@@ -215,10 +230,18 @@ sudo cp /etc/containerd/config.toml /etc/containerd/config.toml.bak
 ```
 
 Dan veranderen we `SystemdCgroup = false` naar `SystemdCgroup = true`:
-```toml title="etc/containerd/config.toml"
-[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
-  ...
-  [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+```toml {12} title="etc/containerd/config.toml" showLineNumbers{116}
+[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+    BinaryName = ""
+    CriuImagePath = ""
+    CriuPath = ""
+    CriuWorkPath = ""
+    IoGid = 0
+    IoUid = 0
+    NoNewKeyring = false
+    NoPivotRoot = false
+    Root = ""
+    ShimCgroup = ""
     SystemdCgroup = true
 ```
 
