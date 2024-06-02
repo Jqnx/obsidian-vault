@@ -203,9 +203,9 @@ sudo usermod -aG docker $USER
 
 ### 3.2 Containerd
 #### 3.2.1 Wat is containerd?
-Containerd is eigenlijk de onderliggende laag onder de docker daemon(`dockerd`). Het is de container runtime waar docker gebruik van maakt.
+Containerd is eigenlijk de onderliggende laag onder de docker daemon(`dockerd`). Het is de container runtime waar Docker gebruik van maakt.
 
-Een container runtime maakt de container en zorgt dat het blijft draaien, het beheerd ook de hoeveelheid resources een container gebruikt. Het is een tussenstap tussen de host OS en de container engine, e.g. docker of kubernetes.
+Een container runtime maakt de container en zorgt dat het blijft draaien, het beheerd ook de hoeveelheid resources een container gebruikt. Het is een tussenstap tussen de host OS en de container engine, e.g. Docker of Kubernetes.
 
 ![[Docker-stack2.png]]
 %%![[docker-stack.png]]%%
@@ -279,21 +279,92 @@ rm /tmp/config.toml
 ### 3.3 Kubernetes
 
 #### 3.3.1 Wat is kubernetes?
-*Kubernetes* is een open-source orkestratieplatform voor het automatiseren van het inzetten, schalen en beheren van software. Het biedt *High-Availability* aan aan de hand van *clusters* en *load-balancing*.
+*Kubernetes* is een open-source orkestratieplatform voor het automatiseren van het inzetten, schalen en beheren van software. Het biedt *High-Availability* aan aan de hand van *clusters*.
 
+*Kubernetes clusters* zijn een groepering van systemen of nodes. Dit zijn:
+- `Control planes`, het systeem dat de cluster beheerd. Draait de benodigde controle componenten e.g., `kube-apiserver`, `etcd`, `scheduler` en de `controller-manager`.
+	-  De `kube-apiserver` configureert de kubernetes objecten e.g., `pods`, `services`, `deployments`, etc. Dit is de belangrijkste en de enige waar je als user mee in aanraking komt, dit gebeurt met het `kubectl` pakket.
+	- `etcd` is een "distributed key-value store" (een simpele database) die al de cluster kritieke data bijhoud.
+	- De `scheduler` checked of er nieuwe `pods` zijn zonder toegewezen node, en selecteert er een voor de pods om op te draaien.
+	- `controller-manager` draait de `controller` processen e.g., `Node controller`, `Job controller`, `EndpointSlice controller` en `ServiceAccount controller`.
+- `Worker nodes`, het systeem dat de verschillende werkladingen gaat draaien e.g., docker containers. De worker nodes worden beheerd aan de hand van de `kubelet`  en `kube-proxy` componenten die communiceren met de *Kubernetes API Server* (`kube-api-server`).
 
-%%Deze docker containers zijn handig maar je kan ze enkel lokaal beheren, dus als je zoals in een productie omgeving meerdere machines hebt die allemaal docker containers draaien kan dit zeer verwarrend worden. Dit is waar *kubernetes* ons kan helpen: "*Kubernetes* is een open-source orkestratieplatform voor het automatiseren van het inzetten, schalen en beheren van software".
+Iedere *Kubernetes cluster* bevat minstens 1 `control plane` en 1 `worker node`.  Dit klinkt allemaal heel ingewikkeld maar we gebruiken `kubeadm` voor onze cluster op te zetten, wat dit hele process veel simpeler maakt.
 
-*Kubernetes* werkt met clusters, dus een groepering van systemen of nodes. Clusters worden gebruikt om *high-availability* aan te bieden, dit betekent dat je applicatie/service operationeel kan blijven zelfs als er een of meer nodes uitvallen. Hoe bestendig je systeem is is afhankelijk van de hoeveelheid nodes je in je cluster hebt.%%
+![[cluster-architecture.png]]
 
-#todo 
-- [ ] how kubernetes works
-- [ ] how kubernetes uses containers
-- [ ] a few kubernetes concepts e.g. pods, service, ingress?, deployments,replicas
-- [ ] how kubernetes does loadbalancing
+Zoals eerder vernoemd zijn er ook een paar *kubernetes* objecten, de belangrijkste voor ons zijn:
+- `Pods`
+- `Deployments`
+- `ReplicaSets`
+- `Services`
+- `Namespaces`
+
+Een `pod` is een groep van 1 of meer containers met gedeelde opslag en netwerk configuratie. `Pods` maak je zelden zelfstandig aan, dit wordt meestal gedaan aan de hand van een `Deployment` of een `Job`.
+
+In een `deployment` geef je gewenste staat aan van je applicatie zoals, hoeveel replicas, de `image` om te gebruiken, etc. De `deployment` maakt dan een `ReplicaSet` aan om dit te bereiken.
+
+>[!example]-
+>```yaml title="nginx-deployment.yaml"
+>apiVersion: apps/v1
+>kind: Deployment
+>metadata:
+>  name: nginx-deployment
+>  labels:
+>   app: nginx
+>spec:
+> replicas: 3
+>selector:
+>    matchLabels:
+>     app: nginx
+>  template:
+>    metadata:
+>     labels:
+>        app: nginx
+>    spec:
+>     containers:
+>      - name: nginx
+>        image: nginx:1.14.2
+>       ports:
+>        - containerPort: 80
+>```
+
+Een `ReplicaSet` zorgt ervoor dat de gewenste hoeveelheid replica `Pods` draaien. Zoals eerder vermeld worden deze meestal aangemaakt door een `deployment`.
+
+In *kubernetes*, is een `Service` de manier waarop we poorten gaan forwarden van onze containers naar ons *host systeem* of *kubernetes*. Dit gebeurt aan de hand van `Services` omdat ip adressen vaak veranderen in een *kubernetes* omgeving. Dit zorgt er dus voor dat je terecht komt bij de juiste `Pods` ongeacht het ip adres hiervan.
+
+>[!example]-
+>```yaml title="sample-service.yaml"
+>apiVersion: v1
+>kind: Service
+>metadata:
+>   name: my-service
+>spec:
+>   selector:
+>     app.kubernetes.io/name: MyApp
+>  ports:
+>	- protocol: TCP
+>	  port: 80
+>	  targetPort: 9376
+>```
+
+Er zijn verschillende types van `Services`:
+- `ClusterIP`
+- `NodePort`
+- `LoadBalancer`
+- `ExternalName`
+
+Maar de enige die we gaan gebruiken is het type `LoadBalancer`. Dit gebruikt een externe Load Balancer om je `Service` bereikbaar te maken. We gebruiken hier een externe Load Balancer (`metallb` of een cloud provider's) omdat *kubernetes* geen ingebouwd component heeft voor Load Balancing.
+
+Ten slotte hebben we de `Namespaces`. Hiermee delen we de cluster op in verschillende geïsoleerde stukken waar onze andere objecten in kunnen leven. Dit wordt voornamelijk gebruikt als je meerdere applicaties of teams hebt die elks een unieke `Namespace` krijgen. Zodat er een kleinere kans is op storingen tussen objecten.
+
+Bijna alle *kubernetes* configuratie waaronder ook deze objecten worden aangemaakt en ingesteld met `yaml` tekst bestanden (`manifests`).
 
 > Sources:
 > [Overview | Kubernetes](https://kubernetes.io/docs/concepts/overview/)
+> [Cluster Architecture | Kubernetes](https://kubernetes.io/docs/concepts/architecture/)
+> [Kubernetes Components | Kubernetes](https://kubernetes.io/docs/concepts/overview/components/)
+> [What Are Objects Used for in Kubernetes? 11 Types Explained](https://kodekloud.com/blog/kubernetes-objects/)
 
 
 #### 3.3.2 Installeren kubeadm, kubelet en kubectl
@@ -315,7 +386,7 @@ En we commenten deze lijn uit in ons /etc/fstab bestand.
 
 #### 3.3.2.2 Installeren pakketten
 
-Als we kubeadm gaan gebruiken om onze cluster op te zetten moeten we dit eerst installeren samen met de kubelet en kubectl pakketten.
+Als we `kubeadm` gaan gebruiken om onze cluster op te zetten moeten we dit eerst installeren samen met de `kubelet` en `kubectl` pakketten.
 
 We starten hiermee door de kubernetes apt repository toe te voegen:
 ```shell
@@ -329,7 +400,7 @@ curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 ```
 
-Dan installeren we de kubelet, kubeadm en kubectl pakketten en houden we de versies bij aangezien deze best hetzelfde is bij alle 3.
+Dan installeren we de `kubelet`, `kubeadm` en `kubectl` pakketten en houden we de versies bij aangezien deze best hetzelfde is bij alle 3.
 ```shell
 sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
@@ -341,14 +412,19 @@ Als laatste starten we de kubelet service en zorgen ervoor dat deze ook automati
 sudo systemctl enable --now kubelet
 ```
 
+>Sources:
+>[Installing kubeadm | Kubernetes](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+
+---
 
 ## 4. Configuratie master node
-- [ ] configure kubeadm
 
+Je kan `kubeadm` gebruiken met commando opties of met een configuratie bestand. Ik gebruik hiervoor een configuratie bestand aangezien dit meer overzichtelijk is.
 ```shell
 sudo vim /etc/kubernetes/kubeadm-config.yaml
 ```
 
+Dit is de inhoud van het configuratie bestand:
 ```yaml title="etc/kubernetes/kubeadm-config.yaml"
 ---
 apiVersion: kubeadm.k8s.io/v1beta3
@@ -380,58 +456,137 @@ mode: "ipvs"
 ipvs:
   strictARP: true
 ```
+We voegen ook een extra domeinnaam toe aan het certificaat dat de `api-server` gebruikt. Dit is voor later gebruik van github actions.
 
+We zetten dan de `control plane` op met het volgende commando:
 ```shell
 sudo kubeadm init --config /etc/kubernetes/kubeadm-config.yaml
 ```
 
-```shell
-kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
-```
-
+Wanneer onze `control plane` opgezet is moeten we kube config hebben voor `kubectl`. Dit doen we door de volgende commando\'s uit te voeren:
 ```shell
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
-## 5. Configuratie worker nodes
-- [ ] join nodes to the cluster
+Ten slotte moeten we ook een `Pod` network add-on installeren. Dit is hoe onze `Pods` een ip adres gaan krijgen en gaan communiceren. Ik gebruik hier `Flannel`.
+```shell
+kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+```
 
+> Sources:
+> [Creating a cluster with kubeadm | Kubernetes](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/)
+> [Virtual IPs and Service Proxies | Kubernetes](https://kubernetes.io/docs/reference/networking/virtual-ips/#proxy-mode-ipvs)
+> [kubeadm Configuration (v1beta3) | Kubernetes](https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/)
+> [ssl - How can I add an additional IP / hostname to my Kubernetes certificate? - DevOps Stack Exchange](https://devops.stackexchange.com/questions/9483/how-can-i-add-an-additional-ip-hostname-to-my-kubernetes-certificate)
+
+---
+
+## 5. Configuratie worker nodes
+
+De configuratie aan de `worker node` kant is heel minimaal, gewoon dit commando uitvoeren om het te verbinden aan de cluster:
 ```shell
 kubeadm join cluster-endpoint.p.kaliki.eu:6443 --token hwlqyf.z8kl8mmido742chb --discovery-token-ca-cert-hash sha256:e00aa409c7d788722ad925112f410840677f2d15d41c6c8522236ca4def18a85
 ```
 
+> Sources:
+> [Creating a cluster with kubeadm | Kubernetes](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/)
+
+---
+
 ## 6. Configuratie kubernetes cluster
+
+### 6.1 MetalLB
+
+We starten met `metallb`, onze load balancer, te installeren op de cluster:
+```shell
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.5/config/manifests/metallb-native.yaml
+```
+
+Dan moeten we een `IPAddressPool` aanmaken zodat onze loadbalancer ip adressen kan uitdelen aan de nodige `Services`:
+```yaml title="k8s-manifests-priv/metallb_pool_1.yaml"
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: pool-1
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.10.240/28
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: pool-1-l2adv
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - pool-1
+```
+Ik geef de loadbalancer hier een range van: `192.168.10.240` tot `192.168.10.254`.
+
+We passen dit dan toe:
+```shell
+kubectl apply -f k8s-manifests-priv/metallb_pool_1.yaml
+```
+
+>Sources:
+>[Installation | MetalLB](https://metallb.org/installation/)
+>[Configuration | MetalLB](https://metallb.org/configuration/)
+
+### 6.2 Cert-manager
+
+*Cert-manager* is een open-source X.509 certificaat controller voor kubernetes. Het kan certificaten van verschillende Issuers aanvragen, en houdt deze ook up-to-date. Het zal dus automatisch opnieuw een aanvraag indienen wanneer er 1 zou vervallen.
+
 
 ```shell
 git clone https://<personal-access-token>@github.com/Jqnx/k8s-manifests-priv
 ```
 
-- [ ] Metallb
+### 6.3 Istio en GatewayAPI
 
-```shell
-kubectl apply -f k8s-manifests-priv/metallb
-```
+Voor onze applicatie extern bereikbaar te maken via een domeinnaam moeten we 1 van de volgende 2 opties gebruiken:
+- `Ingress`
+- `GatewayAPI`
 
-- [ ] Istio
+`Ingress` is de meer gebruikte van de 2 maar is al een tijdje "Frozen" (krijgt geen updates meer) en is minder flexibel dan `GatewayAPI`. Dit komt omdat `Ingress` alleen bruikbaar is voor HTTP en HTTPS.
+
+`GatewayAPI` is de vervanging van `Ingress`. Het is onder actieve productie en ondersteund HTTP, HTTPS, TCP en UDP, en GRPC. Het is wel ingewikkelder op te zetten dan `Ingress`.
+
+Beide hebben ook een extra `Ingress` of `Gateway` controller nodig, in dit geval gebruik ik `Istio`.
+
+Aangezien `GatewayAPI` de vervanger is van `Ingress` en het beschikt over de functies die ik nodig heb, heb ik hiervoor gekozen over `Ingress`.
+
+We starten door `GatewayAPI` te installeren:
 ```shell
 kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
 ```
 
+Vervolgend downloaden we de laatste versie van `Istio`, in dit geval `1.22.0` en voegen dit toe aan ons PATH zodat we het kunnen uitvoeren:
 ```shell
 curl -L https://istio.io/downloadIstio | sh -
 cd istio-1.22.0
 export PATH=$PWD/bin:$PATH
 ```
 
+We installeren het juiste `Istio` profiel voor gebruik met `GatewayAPI`:
 ```shell
 istioctl install -f samples/bookinfo/demo-profile-no-gateways.yaml -y
-kubectl label namespace default istio-injection=enabled
 ```
 
+#todo 
+- [ ] Creatie gateway
+- [ ] automatische creatie van service die gebruik maakt van de loadbalancer
 
-- [ ] cert-manager
+>Sources:
+> [Use Kubernetes Gateway API instead of Ingress! (TLS - Cert Manager - Istio - Prometheus)](https://www.youtube.com/watch?v=nJUzGJQR3tM)
+> [Istio / Getting Started with Istio and Kubernetes Gateway API](https://istio.io/latest/docs/setup/additional-setup/getting-started/)
+> [Introduction - Kubernetes Gateway API](https://gateway-api.sigs.k8s.io/)
+> [Simple Gateway - Kubernetes Gateway API](https://gateway-api.sigs.k8s.io/guides/simple-gateway/)
+
+---
 
 ## 7. Setup website
 - [ ] Dockerfile
@@ -440,9 +595,11 @@ kubectl label namespace default istio-injection=enabled
 - [ ] github actions
 - [ ] git tags
 
+---
+
 ## 8. Sources
 ### Ubiquiti EdgeRouterX
-[EdgeRouterX Manual](https://dl.ubnt.com/guides/edgemax/EdgeRouter_ER-X_QSG.pdf)
+https://dl.ubnt.com/guides/edgemax/EdgeRouter_ER-X_QSG.pdf
 
 ### Wireguard op EdgeOS
 https://www.hostifi.com/blog/edgerouter-wireguard-remote-access-vpn
@@ -450,9 +607,6 @@ https://www.erianna.com/wireguard-ubiquity-edgeos/
 
 ### Installatie ESXi
 https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.esxi.install.doc/GUID-6FFA928F-7F7D-4B1A-B05C-777279233A77.html
-
-### Uitzetten SWAP
-https://askubuntu.com/questions/214805/how-do-i-disable-swap
 
 ### Docker
 https://docs.docker.com/get-started/overview/
@@ -467,19 +621,18 @@ https://docs.docker.com/engine/install/linux-postinstall
 [The Differences between docker and containerd](https://vineetcic.medium.com/the-differences-between-docker-containerd-cri-o-and-runc-a93ae4c9fdac#:~:text=containerd%20is%20a%20high%2Dlevel,processes%20we%20call%20'containers'.)
 https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd
 
+### Uitzetten SWAP
+https://askubuntu.com/questions/214805/how-do-i-disable-swap
+
 ### Kubernetes (kubeadm, kubectl en kubelet)
-[Overview | Kubernetes](https://kubernetes.io/docs/concepts/overview)
-[Installing kubeadm | Kubernetes](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+https://kubernetes.io/docs/concepts/overview
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
+https://devops.stackexchange.com/questions/9483/how-can-i-add-an-additional-ip-hostname-to-my-kubernetes-certificate
 
 ### MetalLB
 https://metallb.org/installation/
 https://metallb.org/configuration/
-
-### Gateway API & Istio
-[Use Kubernetes Gateway API instead of Ingress! (TLS - Cert Manager - Istio - Prometheus)](https://www.youtube.com/watch?v=nJUzGJQR3tM)
-https://istio.io/latest/docs/setup/additional-setup/getting-started/
-https://gateway-api.sigs.k8s.io/
-https://gateway-api.sigs.k8s.io/guides/simple-gateway/
 
 ### Cert manager
 https://cert-manager.io/docs/installation/kubectl/
@@ -489,13 +642,19 @@ https://gateway-api.sigs.k8s.io/guides/tls/
 https://letsencrypt.org/getting-started/
 https://letsencrypt.org/docs/staging-environment/
 
+### Gateway API & Istio
+[Use Kubernetes Gateway API instead of Ingress! (TLS - Cert Manager - Istio - Prometheus)](https://www.youtube.com/watch?v=nJUzGJQR3tM)
+https://istio.io/latest/docs/setup/additional-setup/getting-started/
+https://gateway-api.sigs.k8s.io/
+https://gateway-api.sigs.k8s.io/guides/simple-gateway/
+
 ### Website
 https://dev.to/paschalogu/how-i-deployed-my-website-as-a-container-3fje
 https://docs.docker.com/reference/dockerfile/
 https://hub.docker.com/_/nginx
 
 ### Github Actions
-[Kubernetes Set Context · Actions · GitHub Marketplace · GitHub](https://github.com/marketplace/actions/kubernetes-set-context)
-[Deploy to Kubernetes cluster · Actions · GitHub Marketplace · GitHub](https://github.com/marketplace/actions/deploy-to-kubernetes-cluster)
-[Continuous deployment to Kubernetes with GitHub Actions](https://nicwortel.nl/blog/2022/continuous-deployment-to-kubernetes-with-github-actions)
-[ssl - How can I add an additional IP / hostname to my Kubernetes certificate? - DevOps Stack Exchange](https://devops.stackexchange.com/questions/9483/how-can-i-add-an-additional-ip-hostname-to-my-kubernetes-certificate)
+https://github.com/marketplace/actions/kubernetes-set-context
+https://github.com/marketplace/actions/deploy-to-kubernetes-cluster
+https://nicwortel.nl/blog/2022/continuous-deployment-to-kubernetes-with-github-actions
+https://devops.stackexchange.com/questions/9483/how-can-i-add-an-additional-ip-hostname-to-my-kubernetes-certificate
