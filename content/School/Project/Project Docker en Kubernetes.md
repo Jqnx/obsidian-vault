@@ -18,7 +18,6 @@ tags:
 #todo
 - [ ]  Add first page picture
 - [ ] Add table of contents when done with entire project
-- [x] [[#2.4 VMs configureren]]
 
 # **Project Docker en Kubernetes**
 
@@ -505,7 +504,7 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.5/confi
 ```
 
 Dan moeten we een `IPAddressPool` aanmaken zodat onze loadbalancer ip adressen kan uitdelen aan de nodige `Services`:
-```yaml title="k8s-manifests-priv/metallb_pool_1.yaml"
+```yaml title="metallb_pool_1.yaml"
 ---
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
@@ -529,7 +528,7 @@ Ik geef de loadbalancer hier een range van: `192.168.10.240` tot `192.168.10.254
 
 We passen dit dan toe:
 ```shell
-kubectl apply -f k8s-manifests-priv/metallb_pool_1.yaml
+kubectl apply -f metallb_pool_1.yaml
 ```
 
 >Sources:
@@ -540,13 +539,116 @@ kubectl apply -f k8s-manifests-priv/metallb_pool_1.yaml
 
 *Cert-manager* is een open-source X.509 certificaat controller voor kubernetes. Het kan certificaten van verschillende Issuers aanvragen, en houdt deze ook up-to-date. Het zal dus automatisch opnieuw een aanvraag indienen wanneer er 1 zou vervallen.
 
-
+#### 6.2.1 Installatie cert-manager
+We starten met het manifest te downloaden:
 ```shell
-git clone https://<personal-access-token>@github.com/Jqnx/k8s-manifests-priv
+wget https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager.yaml
 ```
 
+*Cert-manager* heeft ingebouwde ondersteuning voor `GatewayAPI` maar dit staat niet standaard aan, hiervoor moeten we een lijk tekst toevoegen in het manifest bestand:
+```yaml {11} title="1-cert-manager.yaml" showLineNumbers{5622}
+containers:
+        - name: cert-manager-controller
+          image: "quay.io/jetstack/cert-manager-controller:v1.14.5"
+          imagePullPolicy: IfNotPresent
+          args:
+          - --v=2
+          - --cluster-resource-namespace=$(POD_NAMESPACE)
+          - --leader-election-namespace=kube-system
+          - --acme-http01-solver-image=quay.io/jetstack/cert-manager-acmesolver:v1.14.5
+          - --max-concurrent-challenges=60
+          - --feature-gates=ExperimentalGatewayAPISupport=true
+```
+
+Dit installeren we dan in onze cluster:
+```shell
+kubectl apply -f cert-manager.yaml
+```
+
+#### 6.2.2 Aanvragen certificaten
+Ik ga cloudflare gebruiken als mijn ACME Issuer, dit is waar ik mij DNS records ook beheer. Ik ga deze certificaat ook aanvragen met een DNS challenge aangezien ik geen toegang heb aan de poorten nodig voor een HTTP challenge.
+
+Eerst moet ik een Secret in kubernetes aanmaken met mijn cloudflare API token in:
+```yaml title="2-cf-api-token.yaml"
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflare-api-token
+  namespace: cert-manager
+type: Opaque
+stringData:
+  api-token: <token here>
+```
+
+Vervolgens ga ik een staging `ClusterIssuer` aanmaken om te testen of alles correct werkt, aangezien Let's Encrypt hun productie versie rate-limit:
+```yaml title="3-cf-issuer-staging.yaml"
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: cf-issuer-staging
+spec:
+  acme:
+    email: <email here>
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: cf-staging-key
+    solvers:
+    - dns01:
+        cloudflare:
+          email: <cloudflare email here>
+          apiTokenSecretRef:
+            name: cloudflare-api-token
+            key: api-token
+```
+
+
+We maken ook ineens de productie versie van deze `ClusterIssuer` aan voor wanneer we hebben getest dat we een werkend certificaat kunnen aanvragen:
+```yaml title="4-cf-issuer-prod.yaml"
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: cf-issuer-prod
+spec:
+  acme:
+    email: <email here>
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: cf-prod-key
+    solvers:
+    - dns01:
+        cloudflare:
+          email: <cloudflare email here>
+          apiTokenSecretRef:
+            name: cloudflare-api-token
+            key: api-token
+```
+
+We gaan deze `ClusterIssuer`'s later vermelden als een annotation in de `Gateway`. Die gaat dan automatisch een certificaat aanvragen.
+
+We vergeten ook niet om deze toe te passen:
+```shell
+kubectl apply -f 2-cf-api-token.yaml
+kubectl apply -f 3-cf-issuer-staging.yaml
+kubectl apply -f 4-cf-issuer-prod.yaml
+```
+Of als deze allemaal in een map zitten kunnen we deze ook simpeler doen:
+```shell
+kubectl apply -f cert-manager/
+```
+
+> Sources:
+> [kubectl apply - cert-manager Documentation](https://cert-manager.io/docs/installation/kubectl/)
+>[Annotated Gateway resource - cert-manager Documentation](https://cert-manager.io/docs/usage/gateway/)
+>[Cloudflare - cert-manager Documentation](https://cert-manager.io/docs/configuration/acme/dns01/cloudflare)
+>[TLS - Kubernetes Gateway API](https://gateway-api.sigs.k8s.io/guides/tls/)
+>[Getting Started - Let's Encrypt](https://letsencrypt.org/getting-started/)
+>[Staging Environment - Let's Encrypt](https://letsencrypt.org/docs/staging-environment/)
+ 
 ### 6.3 Istio en GatewayAPI
 
+#### 6.3.1 Installatie Istio en GatewayAPI
 Voor onze applicatie extern bereikbaar te maken via een domeinnaam moeten we 1 van de volgende 2 opties gebruiken:
 - `Ingress`
 - `GatewayAPI`
@@ -576,9 +678,56 @@ We installeren het juiste `Istio` profiel voor gebruik met `GatewayAPI`:
 istioctl install -f samples/bookinfo/demo-profile-no-gateways.yaml -y
 ```
 
-#todo 
-- [ ] Creatie gateway
-- [ ] automatische creatie van service die gebruik maakt van de loadbalancer
+#### 6.3.2 Creatie gateway
+Voor onze gateway te creëren maken we eerst een nieuwe namespace aan:
+```yaml title="1-namespace.yaml"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+	name: gateway
+```
+
+Hierna kunnen we onze gateway ook aanmaken:
+```yaml title="2-gateway.yaml"
+---  
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: Gateway
+metadata:
+	name: istio
+	namespace: gateway
+	annotations:
+		# when ready, switch to production cluster issuer
+		cert-manager.io/cluster-issuer: cf-issuer-staging
+		#cert-manager.io/cluster-issuer: cf-issuer-prod
+spec:
+	gatewayClassName: istio
+	listeners:
+	- name: api-https
+	  protocol: HTTPS
+	  port: 443
+	  hostname: p.kaliki.eu
+	  tls:
+		mode: Terminate
+		certificateRefs:
+		- kind: Secret
+		  group: ""
+		  name: gtw-kaliki-eu-cert
+	  allowedRoutes:
+		namespaces:
+			from: All
+```
+We kunnen hier via de annotations aanpassen welke `ClusterIssuer` er gebruikt wordt. Dan passen we deze toe:
+```shell
+kubectl apply -f gateway/
+```
+
+De gateway maakt ook automatisch een `Service` aan van type `LoadBalancer`. Het extern ip adres hiervan bevind zich dus in de range die we eerder hebben opgegeven voor `metallb`. In mijn geval is dit adres: `192.168.10.240`. Deze `Service` bevind zich ook in dezelfde namespace als de gateway.
+
+Dit is ook waar we onze tweede port forwarding regel aanmaken:
+
+![[Port Forwarding 443.png]]
+We forwarden dus het HTTPS verkeer naar het ip dat we hebben gekregen van de `LoadBalancer`.
 
 >Sources:
 > [Use Kubernetes Gateway API instead of Ingress! (TLS - Cert Manager - Istio - Prometheus)](https://www.youtube.com/watch?v=nJUzGJQR3tM)
@@ -589,11 +738,336 @@ istioctl install -f samples/bookinfo/demo-profile-no-gateways.yaml -y
 ---
 
 ## 7. Setup website
-- [ ] Dockerfile
+#todo 
 - [ ] html files
-- [ ] docker build
 - [ ] github actions
 - [ ] git tags
+
+### 7.1 Dockerfile
+We hebben nu de infrastructuur en de manier waarop we onze applicatie gaan bereiken opgezet. Maar we hebben nog geen applicatie om überhaupt te bereiken. Hiervoor gaan we *NGINX* gebruiken. We gaan hiermee onze eigen website hosten.
+
+Dit creëert echter een probleem, de opslag van onze website i.e. onze `index.html`, `style.css` en nodige `scripts`. Hier zijn een paar oplossingen voor, e.g. `volumes`, `configmaps`, `shared folder` of je eigen `docker image` maken. Ik heb gekozen om mijn eigen docker image te maken, aangezien dit de minste "Points of Failure" heeft en meer uitbreidbaar is dan een `configmap`. Een image zelf maken betekent ook dat je de website zou kunnen bewerken en testen in je eigen programmeer omgeving voor dat het in productie gaat.
+
+Om onze eigen docker image te maken moeten we eerst een `Dockerfile` aanmaken:
+```Dockerfile title="Dockerfile"
+FROM nginx:stable-alpine
+
+COPY content /usr/share/nginx/html
+```
+Deze dockerfile is heel minimaal en geeft aan dat we de NGINX docker image gebruiken als basis, plus dat we onze bestanden uit de map `content` kopiëren naar de standaard NGINX html folder (`/usr/share/nginx/html`) in onze container.
+
+#todo 
+- [ ] docker build
+
+### 7.2 NGINX files
+
+#todo 
+- [ ] github repository
+- [ ] manifest files
+- [ ] html files
+
+### 7.3 Github Actions
+
+#### 7.3.1 Inleiding
+Het grootste probleem dat we momenteel zouden hebben is dat je manueel de image zou moeten updaten in de kubernetes cluster. Dit gaan we oplossen met gebruik van *Github Actions*.
+
+*Github Actions* is een CI/CD tool gecreëerd door Github. Hiermee kunnen we een aantal taken automatiseren wanneer we naar onze Github repository pushen. Dit gebeurd aan de hand van `workflows`, een yaml bestand met instructies in.
+
+Hier is de `workflow` die ik hiervoor gebruik:
+```yaml title=".github/workflows/docker-publish.yaml"
+name: ci/cd
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
+
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install the cosign tool
+      # https://github.com/sigstore/cosign-installer
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3.5.0
+        with:
+          cosign-release: 'v2.2.4'
+
+      # Set up BuildKit Docker container builder to be able to build
+      # multi-platform images and export cache
+      # https://github.com/docker/setup-buildx-action
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.3.0
+
+      # Login against a Docker registry
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3.1.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Extract metadata (tags, labels) for Docker
+      # https://github.com/docker/metadata-action
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5.5.1
+        with:
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+
+      # Build and push Docker image with Buildx
+      # https://github.com/docker/build-push-action
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@v5.3.0
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Sign the resulting Docker image digest.
+      # This will only write to the public Rekor transparency log when the Docker
+      # repository is public to avoid leaking data.  If you would like to publish
+      # transparency data even for private images, pass --force to cosign below.
+      # https://github.com/sigstore/cosign
+      - name: Sign the published Docker image
+        env:
+          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
+          TAGS: ${{ steps.meta.outputs.tags }}
+          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+        # This step uses the identity token to provision an ephemeral certificate
+        # against the sigstore community Fulcio instance.
+        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+  
+  deploy:
+    name: Deploy to kubernetes cluster
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+      actions: read
+    
+    steps:
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.29.4'
+        id: install
+
+      - name: Set the kubernetes context
+        uses: azure/k8s-set-context@v4
+        with:
+          method: service-account
+          k8s-url: https://p.kaliki.eu:25032
+          k8s-secret: ${{ secrets.KUBERNETES_SECRET }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy manifests
+        uses: azure/k8s-deploy@v5
+        with:
+          namespace: nginx
+          manifests: |
+            manifests/deployment.yaml
+            manifests/service.yaml
+            manifests/httproute.yaml
+          images: |
+            ${{ needs.build.outputs.tags }}
+```
+
+#### 7.3.2 Eerste instellingen en env variables
+
+Dit is vrij lang maar we zullen dit in een aantal stukken afbreken:
+Eerst stellen we de naam in van de workflow.
+```yaml
+name: ci/cd
+```
+
+Hier geven we aan dat deze workflow enkel wordt uitgevoerd wanneer er naar de repo wordt gepushed met een tag die start met: `v`, e.g. `v1.0.0`
+```yaml
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+```
+
+Hier stellen we een paar environmental variables in voor later hergebruik in het document. We gebruiken github's eigen registry voor onze image to hosten.
+```yaml
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
+```
+
+#### 7.3.3 Build en push docker image
+
+Vervolgens moeten we onze jobs gaan aangeven, dat zijn de taken die github actions gaat uitvoeren. Onze eerste job is `build`. Het maken, testen en pushen van de docker image. We gebruiken ook cosign om onze docker image te ondertekenen met een digest (`hash`).
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install the cosign tool
+      # https://github.com/sigstore/cosign-installer
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3.5.0
+        with:
+          cosign-release: 'v2.2.4'
+
+      # Set up BuildKit Docker container builder to be able to build
+      # multi-platform images and export cache
+      # https://github.com/docker/setup-buildx-action
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.3.0
+
+      # Login against a Docker registry
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3.1.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Extract metadata (tags, labels) for Docker
+      # https://github.com/docker/metadata-action
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5.5.1
+        with:
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+
+      # Build and push Docker image with Buildx
+      # https://github.com/docker/build-push-action
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@v5.3.0
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Sign the resulting Docker image digest.
+      # This will only write to the public Rekor transparency log when the Docker
+      # repository is public to avoid leaking data.  If you would like to publish
+      # transparency data even for private images, pass --force to cosign below.
+      # https://github.com/sigstore/cosign
+      - name: Sign the published Docker image
+        env:
+          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
+          TAGS: ${{ steps.meta.outputs.tags }}
+          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+        # This step uses the identity token to provision an ephemeral certificate
+        # against the sigstore community Fulcio instance.
+        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+```
+
+#### 7.3.3 Deploy naar kubernetes
+
+Onze tweede job is het deployen van deze image naar onze kubernetes cluster:
+```yaml
+deploy:
+    name: Deploy to kubernetes cluster
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+      actions: read
+    
+    steps:
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.30.0'
+        id: install
+
+      - name: Set the kubernetes context
+        uses: azure/k8s-set-context@v4
+        with:
+          method: service-account
+          k8s-url: https://p.kaliki.eu:25032
+          k8s-secret: ${{ secrets.KUBERNETES_SECRET }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy manifests
+        uses: azure/k8s-deploy@v5
+        with:
+          namespace: nginx
+          manifests: |
+            manifests/deployment.yaml
+            manifests/service.yaml
+            manifests/httproute.yaml
+          images: |
+            ${{ needs.build.outputs.tags }}
+```
+
+#todo 
+- [ ] service account
+- [ ] port forward kube api server
+- [ ] service account secret in github repo
+- [ ] manifests
 
 ---
 
