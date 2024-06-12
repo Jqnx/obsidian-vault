@@ -1,6 +1,6 @@
-%%---
+---
 title: Project Docker en Kubernetes
-draft: false
+draft: true
 tags:
   - school
   - project
@@ -13,7 +13,7 @@ tags:
   - metallb
   - istio
   - git
----%%
+---
 
 #todo
 - [ ]  Add first page picture
