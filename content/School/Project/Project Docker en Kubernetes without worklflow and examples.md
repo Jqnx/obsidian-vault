@@ -15,7 +15,7 @@ tags:
   - git
 ---
 
-![[voorblad v2.jpg]]
+![[voorblad v4.png]]
 
 <div class="page-break" style="page-break-before: always;"></div>
 
@@ -72,6 +72,8 @@ tags:
 		- [[#7.2 Github Actions#7.2.4 Service account|7.2.4 Service account]]
 		- [[#7.2 Github Actions#7.2.5 Portforwarding kube-apiserver|7.2.5 Portforwarding kube-apiserver]]
 		- [[#7.2 Github Actions#7.2.6 Updaten website|7.2.6 Updaten website]]
+- [[#8. Extra docker container|8. Extra docker container]]
+	- [[#8. Extra docker container#8.1 Installatie portainer|8.1 Installatie portainer]]
 - [[#Troubleshooting|Troubleshooting]]
 	- [[#Troubleshooting#1. SWAP|1. SWAP]]
 	- [[#Troubleshooting#2. Metallb|2. Metallb]]
@@ -79,6 +81,7 @@ tags:
 - [[#Sources|Sources]]
 - [[#Agenda|Agenda]]
 - [[#Besluit|Besluit]]
+
 
 <div class="page-break" style="page-break-before: always;"></div>
 
@@ -88,7 +91,7 @@ Ik heb voor het project *Docker en Kubernetes* gekozen. Vooral omdat ik al wat e
 <div class="page-break" style="page-break-before: always;"></div>
 
 ## Netwerkschema
-![[Netwerkschema_Project_Jan_v3_transparant.png|525]]
+![[Netwerkschema_Project_Jan_v4_transparant.png|475]]
 
 <div class="page-break" style="page-break-before: always;"></div>
 
@@ -483,7 +486,7 @@ rm /tmp/config.toml
 
 *Kubernetes clusters* zijn een groepering van systemen of nodes. Dit zijn:
 - `Control planes`, het systeem dat de cluster beheerd. Draait de benodigde controle componenten e.g., `kube-apiserver`, `etcd`, `scheduler` en de `controller-manager`.
-	-  De `kube-apiserver` configureert de kubernetes objecten e.g., `pods`, `services`, `deployments`, etc. Dit is de belangrijkste en de enige waar je als user mee in aanraking komt, dit gebeurt met het `kubectl` pakket.
+	-  De `kube-apiserver` configureert de kubernetes objecten e.g., `pods`, `services`, `deployments`, etc. Dit is de belangrijkste en het enige component waar je als user mee in aanraking komt, dit gebeurt met het `kubectl` pakket.
 	- `etcd` is een "distributed key-value store" (een simpele database) die al de cluster kritieke data bijhoud.
 	- De `scheduler` checked of er nieuwe `pods` zijn zonder toegewezen node, en selecteert er een voor de pods om op te draaien.
 	- `controller-manager` draait de `controller` processen e.g., `Node controller`, `Job controller`, `EndpointSlice controller` en `ServiceAccount controller`.
@@ -1314,6 +1317,27 @@ git push origin tag v1.0.0
 >[Git - Tagging](https://git-scm.com/book/en/v2/Git-Basics-Tagging)
 
 ---
+
+## 8. Extra docker container
+Voor onze extra docker container heb ik *portainer* gekozen. Dit is een controle paneel voornamelijk voor docker maar het heeft ook een aantal kubernetes mogelijkheden.
+
+### 8.1 Installatie portainer
+De installatie van portainer is enorm simpel. We maken een nieuw volume aan:
+```shell
+docker volume create portainer_data
+```
+
+En dan maken we de portainer container aan:
+```shell
+docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest
+```
+
+Portainer is nu bereikbaar op poort `9443`. Dit is een HTTPS poort en gebruikt een self-signed certificate.
+
+>Sources:
+>[Install Portainer CE with Docker on Linux | 2.19 | Portainer Documentation](https://docs.portainer.io/start/install-ce/server/docker/linux)
+
+---
 ## Troubleshooting
 ### 1. SWAP
 Het eerste probleem dat ik tegenkwam was dat de kubelet niet wou opstarten. Dit kwam omdat SWAP niet uitstond. Er staat in de documentatie dat SWAP uit moet maar ik had hier per ongeluk over gekeken.
@@ -1322,6 +1346,8 @@ Oplossing: SWAP uitzetten of beter documentatie lezen
 ### 2. Metallb
 Het was even uitzoeken welk ip adres ik hiervoor moest ingeven.
 Oplossing: meer documentatie gelezen, voorbeelden bekeken en een beetje experimentatie. (Een ip adres op de LAN dat niet in gebruik is.)
+
+<div class="page-break" style="page-break-before: always;"></div>
 
 ### 3. Github actions
 Het was de eerste keer dat ik met github actions werkte dus dit is waar ik de meeste problemen had. Het eerste probleem dat ik hier had was: `Error: signing [ghcr.io/jqnx/project-website:main@sha256:ad889b1031281d98b965ad664101a13c852cc2a87c7d0c754a65d6cd673cd2f6]: getting signer: getting key from Fulcio: getting CTFE public keys: updating local metadata and targets: error updating to TUF remote mirror: invalid key`.
@@ -1402,6 +1428,9 @@ https://git-scm.com/book/en/v2/Git-Basics-Tagging
 https://github.com/Jqnx/project-website
 https://tailscale.com/kb/1185/kubernetes
 https://tailscale.com/kb/1276/tailscale-github-action
+
+###### Portainer
+https://docs.portainer.io/start/install-ce/server/docker/linux
 
 <div class="page-break" style="page-break-before: always;"></div>
 
