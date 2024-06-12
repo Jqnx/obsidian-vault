@@ -19,68 +19,69 @@ tags:
 
 <div class="page-break" style="page-break-before: always;"></div>
 
-- [[#Inleiding|Inleiding]]
-- [[#Netwerkschema|Netwerkschema]]
-- [[#1. Router|1. Router]]
-	- [[#1. Router#1.1 Opzoeken handleiding|1.1 Opzoeken handleiding]]
-	- [[#1. Router#1.2 Instellen statisch IP|1.2 Instellen statisch IP]]
-	- [[#1. Router#1.3 Setup Wizard|1.3 Setup Wizard]]
-		- [[#1.3 Setup Wizard#1.3.1 WAN configuratie|1.3.1 WAN configuratie]]
-		- [[#1.3 Setup Wizard#1.3.2 LAN configuratie|1.3.2 LAN configuratie]]
-		- [[#1.3 Setup Wizard#1.3.3 Instellen DHCP windows|1.3.3 Instellen DHCP windows]]
-	- [[#1. Router#1.4 Instellen Wireguard VPN|1.4 Instellen Wireguard VPN]]
-		- [[#1.4 Instellen Wireguard VPN#1.4.1 Installeren Wireguard|1.4.1 Installeren Wireguard]]
-		- [[#1.4 Instellen Wireguard VPN#1.4.2 Aanmaken Wireguard keys|1.4.2 Aanmaken Wireguard keys]]
-		- [[#1.4 Instellen Wireguard VPN#1.4.3 Aanmaken Wireguard interface|1.4.3 Aanmaken Wireguard interface]]
-		- [[#1.4 Instellen Wireguard VPN#1.4.3 Instellen client|1.4.3 Instellen client]]
-- [[#2. ESXi|2. ESXi]]
-	- [[#2. ESXi#2.1 ESXi installeren|2.1 ESXi installeren]]
-	- [[#2. ESXi#2.2 ESXi instellingen|2.2 ESXi instellingen]]
-	- [[#2. ESXi#2.3 VMs aanmaken|2.3 VMs aanmaken]]
-	- [[#2. ESXi#2.4 VMs configureren|2.4 VMs configureren]]
-- [[#3. Gemeenschappelijke configuratie|3. Gemeenschappelijke configuratie]]
-	- [[#3. Gemeenschappelijke configuratie#3.1 Docker|3.1 Docker]]
-		- [[#3.1 Docker#3.1.1 Wat is docker?|3.1.1 Wat is docker?]]
-		- [[#3.1 Docker#3.1.2 Docker installeren|3.1.2 Docker installeren]]
-	- [[#3. Gemeenschappelijke configuratie#3.2 Containerd|3.2 Containerd]]
-		- [[#3.2 Containerd#3.2.1 Wat is containerd?|3.2.1 Wat is containerd?]]
-		- [[#3.2 Containerd#3.2.2 Waarom containerd over Docker als CRI|3.2.2 Waarom containerd over Docker als CRI]]
-		- [[#3.2 Containerd#3.2.3 Containerd instellen|3.2.3 Containerd instellen]]
-	- [[#3. Gemeenschappelijke configuratie#3.3 Kubernetes|3.3 Kubernetes]]
-		- [[#3.3 Kubernetes#3.3.1 Wat is kubernetes?|3.3.1 Wat is kubernetes?]]
-		- [[#3.3 Kubernetes#3.3.2 Installeren kubeadm, kubelet en kubectl|3.3.2 Installeren kubeadm, kubelet en kubectl]]
-		- [[#3.3 Kubernetes#3.3.2.1 Uitzetten SWAP|3.3.2.1 Uitzetten SWAP]]
-		- [[#3.3 Kubernetes#3.3.2.2 Installeren pakketten|3.3.2.2 Installeren pakketten]]
-- [[#4. Configuratie master node|4. Configuratie master node]]
-- [[#5. Configuratie worker nodes|5. Configuratie worker nodes]]
-- [[#6. Configuratie kubernetes cluster|6. Configuratie kubernetes cluster]]
-	- [[#6. Configuratie kubernetes cluster#6.1 MetalLB|6.1 MetalLB]]
-	- [[#6. Configuratie kubernetes cluster#6.2 Cert-manager|6.2 Cert-manager]]
-		- [[#6.2 Cert-manager#6.2.1 Installatie cert-manager|6.2.1 Installatie cert-manager]]
-		- [[#6.2 Cert-manager#6.2.2 Aanvragen certificaten|6.2.2 Aanvragen certificaten]]
-	- [[#6. Configuratie kubernetes cluster#6.3 Istio en GatewayAPI|6.3 Istio en GatewayAPI]]
-		- [[#6.3 Istio en GatewayAPI#6.3.1 Installatie Istio en GatewayAPI|6.3.1 Installatie Istio en GatewayAPI]]
-		- [[#6.3 Istio en GatewayAPI#6.3.2 Creatie gateway|6.3.2 Creatie gateway]]
-- [[#7. Setup website|7. Setup website]]
-	- [[#7. Setup website#7.1 Dockerfile|7.1 Dockerfile]]
-	- [[#7. Setup website#7.2 Github Actions|7.2 Github Actions]]
-		- [[#7.2 Github Actions#7.2.1 Inleiding|7.2.1 Inleiding]]
-		- [[#7.2 Github Actions#7.2.2 Github repository|7.2.2 Github repository]]
-		- [[#7.2 Github Actions#7.2.3.1 Workflow|7.2.3.1 Workflow]]
-		- [[#7.2 Github Actions#7.2.3.2 Build en push docker image|7.2.3.2 Build en push docker image]]
-		- [[#7.2 Github Actions#7.2.3.3 Deploy naar kubernetes|7.2.3.3 Deploy naar kubernetes]]
-		- [[#7.2 Github Actions#7.2.4 Service account|7.2.4 Service account]]
-		- [[#7.2 Github Actions#7.2.5 Portforwarding kube-apiserver|7.2.5 Portforwarding kube-apiserver]]
-		- [[#7.2 Github Actions#7.2.6 Updaten website|7.2.6 Updaten website]]
-- [[#8. Extra docker container|8. Extra docker container]]
-	- [[#8. Extra docker container#8.1 Installatie portainer|8.1 Installatie portainer]]
-- [[#Troubleshooting|Troubleshooting]]
-	- [[#Troubleshooting#1. SWAP|1. SWAP]]
-	- [[#Troubleshooting#2. Metallb|2. Metallb]]
-	- [[#Troubleshooting#3. Github actions|3. Github actions]]
-- [[#Sources|Sources]]
-- [[#Agenda|Agenda]]
-- [[#Besluit|Besluit]]
+- [Inleiding](#Inleiding)
+- [Netwerkschema](#Netwerkschema)
+- [1. Router](#1.%20Router)
+	- [1.1 Opzoeken handleiding](#1.1%20Opzoeken%20handleiding)
+	- [1.2 Instellen statisch IP](#1.2%20Instellen%20statisch%20IP)
+	- [1.3 Setup Wizard](#1.3%20Setup%20Wizard)
+		- [1.3.1 WAN configuratie](#1.3.1%20WAN%20configuratie)
+		- [1.3.2 LAN configuratie](#1.3.2%20LAN%20configuratie)
+		- [1.3.3 Instellen DHCP windows](#1.3.3%20Instellen%20DHCP%20windows)
+	- [1.4 Instellen Wireguard VPN](#1.4%20Instellen%20Wireguard%20VPN)
+		- [1.4.1 Installeren Wireguard](#1.4.1%20Installeren%20Wireguard)
+		- [1.4.2 Aanmaken Wireguard keys](#1.4.2%20Aanmaken%20Wireguard%20keys)
+		- [1.4.3 Aanmaken Wireguard interface](#1.4.3%20Aanmaken%20Wireguard%20interface)
+		- [1.4.3 Instellen client](#1.4.3%20Instellen%20client)
+- [2. ESXi](#2.%20ESXi)
+	- [2.1 ESXi installeren](#2.1%20ESXi%20installeren)
+	- [2.2 ESXi instellingen](#2.2%20ESXi%20instellingen)
+	- [2.3 VMs aanmaken](#2.3%20VMs%20aanmaken)
+	- [2.4 VMs configureren](#2.4%20VMs%20configureren)
+- [3. Gemeenschappelijke configuratie](#3.%20Gemeenschappelijke%20configuratie)
+	- [3.1 Docker](#3.1%20Docker)
+		- [3.1.1 Wat is docker?](#3.1.1%20Wat%20is%20docker?)
+		- [3.1.2 Docker installeren](#3.1.2%20Docker%20installeren)
+	- [3.2 Containerd](#3.2%20Containerd)
+		- [3.2.1 Wat is containerd?](#3.2.1%20Wat%20is%20containerd?)
+		- [3.2.2 Waarom containerd over Docker als CRI](#3.2.2%20Waarom%20containerd%20over%20Docker%20als%20CRI)
+		- [3.2.3 Containerd instellen](#3.2.3%20Containerd%20instellen)
+	- [3.3 Kubernetes](#3.3%20Kubernetes)
+		- [3.3.1 Wat is kubernetes?](#3.3.1%20Wat%20is%20kubernetes?)
+		- [3.3.2 Installeren kubeadm, kubelet en kubectl](#3.3.2%20Installeren%20kubeadm,%20kubelet%20en%20kubectl)
+		- [3.3.2.1 Uitzetten SWAP](#3.3.2.1%20Uitzetten%20SWAP)
+		- [3.3.2.2 Installeren pakketten](#3.3.2.2%20Installeren%20pakketten)
+- [4. Configuratie master node](#4.%20Configuratie%20master%20node)
+- [5. Configuratie worker nodes](#5.%20Configuratie%20worker%20nodes)
+- [6. Configuratie kubernetes cluster](#6.%20Configuratie%20kubernetes%20cluster)
+	- [6.1 MetalLB](#6.1%20MetalLB)
+	- [6.2 Cert-manager](#6.2%20Cert-manager)
+		- [6.2.1 Installatie cert-manager](#6.2.1%20Installatie%20cert-manager)
+		- [6.2.2 Aanvragen certificaten](#6.2.2%20Aanvragen%20certificaten)
+	- [6.3 Istio en GatewayAPI](#6.3%20Istio%20en%20GatewayAPI)
+		- [6.3.1 Installatie Istio en GatewayAPI](#6.3.1%20Installatie%20Istio%20en%20GatewayAPI)
+		- [6.3.2 Creatie gateway](#6.3.2%20Creatie%20gateway)
+- [7. Setup website](#7.%20Setup%20website)
+	- [7.1 Dockerfile](#7.1%20Dockerfile)
+	- [7.2 Github Actions](#7.2%20Github%20Actions)
+		- [7.2.1 Inleiding](#7.2.1%20Inleiding)
+		- [7.2.2 Github repository](#7.2.2%20Github%20repository)
+		- [7.2.3.1 Workflow](#7.2.3.1%20Workflow)
+		- [7.2.3.2 Build en push docker image](#7.2.3.2%20Build%20en%20push%20docker%20image)
+		- [7.2.3.3 Deploy naar kubernetes](#7.2.3.3%20Deploy%20naar%20kubernetes)
+		- [7.2.4 Service account](#7.2.4%20Service%20account)
+		- [7.2.5 Portforwarding kube-apiserver](#7.2.5%20Portforwarding%20kube-apiserver)
+		- [7.2.6 Updaten website](#7.2.6%20Updaten%20website)
+- [8. Extra docker container](#8.%20Extra%20docker%20container)
+	- [8.1 Installatie portainer](#8.1%20Installatie%20portainer)
+- [Troubleshooting](#Troubleshooting)
+	- [1. SWAP](#1.%20SWAP)
+	- [2. Metallb](#2.%20Metallb)
+	- [3. Github actions](#3.%20Github%20actions)
+- [Sources](#Sources)
+- [Agenda](#Agenda)
+- [Besluit](#Besluit)
+
 
 
 <div class="page-break" style="page-break-before: always;"></div>
