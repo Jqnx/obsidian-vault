@@ -6,14 +6,14 @@ tags:
   - linux
   - ubuntu
   - docker
-  - docker compose
-  - speedtest tracker
+  - docker-compose
+  - speedtest-tracker
   - omoikane
 ---
 
 # Instructions
 
-## Docker Compose
+## 1. Docker Compose
 
 ```yaml title="containers/speedtest-tracker/docker-compose.yml"
 ---
@@ -56,4 +56,4 @@ networks:
 > Sources:
 > [Introduction | Speedtest Tracker](https://docs.speedtest-tracker.dev/)
 > [GitHub - alexjustesen/speedtest-tracker](https://github.com/alexjustesen/speedtest-tracker)
-> [GitHub - linuxserver/docker-speedtest-tracker](https://github.com/linuxserver/docker-speedtest-tracker)
+> [speedtest-tracker - LinuxServer.io](https://docs.linuxserver.io/images/docker-speedtest-tracker/)

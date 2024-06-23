@@ -6,8 +6,8 @@ tags:
   - linux
   - ubuntu
   - docker
-  - docker compose
-  - docker networks
+  - docker-compose
+  - docker-networks
   - socket-proxy
   - omoikane
   - dionysus
@@ -17,12 +17,7 @@ tags:
 
 # Instructions
 
-## Docker Network
-```shell
-docker network create socket
-```
-
-## Docker Compose
+## 1. Docker Compose
 ```yaml title="containers/socket-proxy/docker-compose.yml"
 ---
 services:
@@ -88,6 +83,6 @@ networks:
 
 
 
->Source:
+>Sources:
 >[GitHub - Tecnativa/docker-socket-proxy: Proxy over your Docker socket to restrict which requests it accepts](https://github.com/Tecnativa/docker-socket-proxy)
 >[socket-proxy - LinuxServer.io](https://docs.linuxserver.io/images/docker-socket-proxy/)

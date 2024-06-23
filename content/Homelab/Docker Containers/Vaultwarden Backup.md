@@ -6,11 +6,11 @@ tags:
   - linux
   - ubuntu
   - docker
-  - docker compose
+  - docker-compose
   - vaultwarden
-  - vaultwarden backup
+  - vaultwarden-backup
   - rclone
-  - google drive
+  - google-drive
   - omoikane
 ---
 

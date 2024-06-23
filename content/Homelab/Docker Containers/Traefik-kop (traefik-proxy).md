@@ -6,7 +6,7 @@ tags:
   - linux
   - ubuntu
   - docker
-  - docker compose
+  - docker-compose
   - traefik-kop
   - dionysus
   - pnode
@@ -14,12 +14,7 @@ tags:
 
 # Instructions
 
-## Docker Network
-```shell
-docker network create proxy
-```
-
-## Traefik Configuration
+## 1. Traefik Configuration
 Add `redis` to traefik providers
 ```yaml title="containers/traefik/data/traefik.yml"
 providers:
@@ -28,7 +23,7 @@ providers:
       - "traefik-redis:6379"
 ```
 
-## Docker Compose
+## 2. Docker Compose
 ```yaml title="containers/traefik-kop/docker-compose.yml"
 ---
 services:

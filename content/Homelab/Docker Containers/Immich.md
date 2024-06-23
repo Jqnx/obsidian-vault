@@ -1,19 +1,19 @@
 ---
 title: Immich
-draft: true
+draft: false
 tags:
   - homelab
   - linux
   - ubuntu
   - docker
-  - docker compose
+  - docker-compose
   - immich
   - dionysus
 ---
 
 # Instructions
 
-## Docker Compose
+## 1. Docker Compose
 ```yaml
 #
 # WARNING: Make sure to use the docker-compose.yml of the current release:
@@ -133,3 +133,7 @@ DB_PASSWORD=<password>
 DB_USERNAME=postgres
 DB_DATABASE_NAME=immich
 ```
+
+> Sources:
+> [GitHub - immich-app/immich](https://github.com/immich-app/immich)
+> [Quick Start | Immich](https://immich.app/docs/overview/quick-start)

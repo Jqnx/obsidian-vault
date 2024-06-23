@@ -6,7 +6,7 @@ tags:
   - linux
   - ubuntu
   - docker
-  - docker compose
+  - docker-compose
   - watchtower
   - omoikane
   - dionysus
@@ -14,7 +14,9 @@ tags:
   - oracle
 ---
 
-## Docker Compose
+# Instructions
+
+## 1. Docker Compose
 
 ```yaml title="containers/watchtower/docker-compose.yml"
 ---

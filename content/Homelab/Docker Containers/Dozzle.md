@@ -6,14 +6,14 @@ tags:
   - linux
   - ubuntu
   - docker
-  - docker compose
+  - docker-compose
   - dozzle
   - omoikane
 ---
 
 # Instructions
 
-## Docker Compose
+## 1. Docker Compose
 ```yaml
 ---
 services:

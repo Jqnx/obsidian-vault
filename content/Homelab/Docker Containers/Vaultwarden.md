@@ -6,7 +6,7 @@ tags:
   - linux
   - ubuntu
   - docker
-  - docker compose
+  - docker-compose
   - vaultwarden
   - omoikane
 ---
