@@ -1,5 +1,5 @@
 ---
-title: Calibre
+title: Calibre & Calibre-web
 draft: false
 tags:
   - homelab
@@ -14,7 +14,7 @@ tags:
 
 # Instructions
 
-## 1. Docker Compose
+## Docker Compose
 ```yaml title="containers/calibre/docker-compose.yml"
 ---
 services:
@@ -30,7 +30,7 @@ services:
       - TZ=Europe/Brussels
     volumes:
       - ~/containers/calibre/config:/config
-      - /mnt/media/media/books:/data/media/books
+      - /mnt/<library1>/media/books:/data/media/books
     ports:
       - 8181:8181
       - 8081:8081
@@ -50,7 +50,7 @@ services:
       - OAUTHLIB_RELAX_TOKEN_SCOPE=1 #optional
     volumes:
       - ~/containers/calibre/calibre-web:/config
-      - /mnt/media/media/books:/books
+      - /mnt/<library1>/media/books:/books
     ports:
       - 8083:8083
     networks:

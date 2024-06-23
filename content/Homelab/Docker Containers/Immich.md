@@ -14,7 +14,7 @@ tags:
 # Instructions
 
 ## 1. Docker Compose
-```yaml
+```yaml title="containers/immich/docker-compose.yml"
 #
 # WARNING: Make sure to use the docker-compose.yml of the current release:
 #
@@ -35,6 +35,7 @@ services:
     volumes:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
+      - ${EXTERNAL_PATH}:/usr/src/app/external
     env_file:
       - .env
     ports:
@@ -118,6 +119,8 @@ networks:
 UPLOAD_LOCATION=./library
 # The location where your database files are stored
 DB_DATA_LOCATION=./postgres
+# The location where your external files are stored
+EXTERNAL_PATH=/mnt/<libary2>/...
 
 # To set a timezone, uncomment the next line and change Etc/UTC to a TZ identifier from this list: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
 TZ=Europe/Brussels

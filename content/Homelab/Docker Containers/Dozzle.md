@@ -14,7 +14,7 @@ tags:
 # Instructions
 
 ## 1. Docker Compose
-```yaml
+```yaml title="containers/dozzle/docker-compose.yml"
 ---
 services:
   dozzle:

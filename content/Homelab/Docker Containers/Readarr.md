@@ -7,7 +7,6 @@ tags:
   - ubuntu
   - docker
   - docker-compose
-  - calibre
   - arr
   - readarr
   - dionysus
@@ -30,7 +29,7 @@ services:
       - TZ=Europe/Brussels
     volumes:
       - ~/containers/calibre/readarr:/config
-      - /mnt/media:/data
+      - /mnt/<library1>:/data
     ports:
       - 8787:8787
     networks:
