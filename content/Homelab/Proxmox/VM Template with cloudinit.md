@@ -74,6 +74,7 @@ package_upgrade: true
 packages:
 - qemu-guest-agent
 - git
+- nfs-common
 
 # Start qemu-guest-agent
 runcmd:
