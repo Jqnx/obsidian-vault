@@ -25,8 +25,6 @@ Add `redis` to traefik providers
 providers:
   redis:
     endpoints:
-      # assumes a redis link with this service name running on the same
-      # docker host as traefik
       - "traefik-redis:6379"
 ```
 
