@@ -61,6 +61,50 @@ networks:
 #todo 
 - [ ] add custom config to documentation
 
+#### Custom CSS
+```css
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/fixes.css');
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/jf_font.css');
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/base.css');
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/accentlist.css');
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/rounding.css');
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/smallercast.css');
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/episodelist/episodes_compactlist.css');
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/header/header_transparent.css');
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/login/login_minimalistic.css');
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/fields/fields_noborder.css');
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/cornerindicator/indicator_corner.css');
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/type/colorful.css');
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/titlepage/title_banner-logo.css');
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/progress/floating.css');
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/effects/hoverglow.css');
+@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/effects/glassy.css');
+@import url('https://ctalvio.github.io/Monochromic/backdrop-hack_style.css');
+
+@Import url("https://cdn.jsdelivr.net/gh/prayag17/Jellyfin-Icons/round.css");
+
+/*Style backdrop*/
+.backdropImage {filter: blur(2px) saturate(120%) contrast(120%) brightness(40%);}
+
+/*Login background*/
+#loginPage {
+  background: url(https://i.imgur.com/wTyPKCo.png) !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+
+/*Accent and rounding*/
+:root {--accent: 175, 122, 197;}
+:root {--rounding: 12px;}
+
+/*Custom Logo*/
+.adminDrawerLogo img { content: url(https://i.imgur.com/jOad6DO.png) !important; } imgLogoIcon { content: url(https://i.imgur.com/jOad6DO.png) !important; }
+.pageTitleWithLogo { background-image: url(https://i.imgur.com/jOad6DO.png) !important; }
+```
+
+> Sources:
+> [GitHub - CTalvio/Ultrachromic: The final form, the true evolution of the chromic theme saga!](https://github.com/CTalvio/Ultrachromic)
+
 ## 2. Jellyseerr
 
 ### Docker Compose
