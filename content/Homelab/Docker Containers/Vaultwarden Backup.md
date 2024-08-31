@@ -16,7 +16,9 @@ tags:
 
 # Instructions
 
-## 1. Configure rclone
+---
+
+## Configure rclone
 ```shell
 docker run --rm -it \
   --mount type=volume,source=vaultwarden-rclone-data,target=/config/ \
@@ -26,7 +28,9 @@ docker run --rm -it \
 
 For Google Drive you can use rclone's own client ID (which is rate-limited), or you can create your own client ID ([Google drive](https://rclone.org/drive/#making-your-own-client-id)).
 
-## 2. Docker Compose
+---
+
+## Docker Compose
 
 This assumes you use `BitwardenBackup` as remote name, otherwise change the `RCLONE_REMOTE_NAME` environment variable to whatever you used. This also assumes you use a volume for the vaultwarden container.
 
@@ -60,6 +64,8 @@ volumes:
     name: vaultwarden-rclone-data
 ```
 
-> Sources:
-> [GitHub - ttionya/vaultwarden-backup: Backup vaultwarden (formerly known as bitwarden\_rs) SQLite3/PostgreSQL/MySQL/MariaDB database by rclone. (Docker)](https://github.com/ttionya/vaultwarden-backup)
-> [GitHub - rclone/rclone: "rsync for cloud storage" - Google Drive, S3, Dropbox, Backblaze B2, One Drive, Swift, Hubic, Wasabi, Google Cloud Storage, Azure Blob, Azure Files, Yandex Files](https://github.com/rclone/rclone)
+---
+
+## Sources
+- [GitHub - ttionya/vaultwarden-backup: Backup vaultwarden (formerly known as bitwarden\_rs) SQLite3/PostgreSQL/MySQL/MariaDB database by rclone. (Docker)](https://github.com/ttionya/vaultwarden-backup)
+- [GitHub - rclone/rclone: "rsync for cloud storage" - Google Drive, S3, Dropbox, Backblaze B2, One Drive, Swift, Hubic, Wasabi, Google Cloud Storage, Azure Blob, Azure Files, Yandex Files](https://github.com/rclone/rclone)

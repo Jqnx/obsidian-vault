@@ -13,7 +13,9 @@ tags:
 
 # Instructions
 
-## 1. Docker Compose
+---
+
+## Docker Compose
 ```yaml title="containers/immich/docker-compose.yml"
 #
 # WARNING: Make sure to use the docker-compose.yml of the current release:
@@ -110,6 +112,8 @@ networks:
     external: true
 ```
 
+---
+
 ## .env
 
 ```toml
@@ -137,6 +141,8 @@ DB_USERNAME=postgres
 DB_DATABASE_NAME=immich
 ```
 
-> Sources:
-> [GitHub - immich-app/immich](https://github.com/immich-app/immich)
-> [Quick Start | Immich](https://immich.app/docs/overview/quick-start)
+---
+
+## Sources
+- [GitHub - immich-app/immich](https://github.com/immich-app/immich)
+- [Quick Start | Immich](https://immich.app/docs/overview/quick-start)

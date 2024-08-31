@@ -13,7 +13,9 @@ tags:
 
 # Instructions
 
-## 1. Docker Compose
+---
+
+## Docker Compose
 ```yaml title="containers/dozzle/docker-compose.yml"
 ---
 services:
@@ -49,6 +51,7 @@ networks:
     external: true
 ```
 
+---
 
 ## Supported env variables
 |Flag|Env Variable|Default|
@@ -67,6 +70,8 @@ networks:
 |`--no-analytics`|`DOZZLE_NO_ANALYTICS`|false|
 |`--remote-host`|`DOZZLE_REMOTE_HOST`|
 
-> Sources:
-> [Home | Dozzle](https://dozzle.dev/)
-> [GitHub - amir20/dozzle](https://github.com/amir20/dozzle)
+---
+
+## Sources
+- [Home | Dozzle](https://dozzle.dev/)
+- [GitHub - amir20/dozzle](https://github.com/amir20/dozzle)

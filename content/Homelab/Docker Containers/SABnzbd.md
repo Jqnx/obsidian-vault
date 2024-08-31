@@ -13,6 +13,8 @@ tags:
 
 # Instructions
 
+---
+
 ## Docker Compose
 
 ```yaml
@@ -63,6 +65,8 @@ networks:
     external: true
 ```
 
-> Sources:
-> [hub.docker.com/r/binhex/arch-sabnzbdvpn/](https://hub.docker.com/r/binhex/arch-sabnzbdvpn/)
-> [documentation/docker/guides/vpn.md at master · binhex/documentation · GitHub](https://github.com/binhex/documentation/blob/master/docker/guides/vpn.md)
+---
+
+## Sources
+- [hub.docker.com/r/binhex/arch-sabnzbdvpn/](https://hub.docker.com/r/binhex/arch-sabnzbdvpn/)
+- [documentation/docker/guides/vpn.md at master · binhex/documentation · GitHub](https://github.com/binhex/documentation/blob/master/docker/guides/vpn.md)

@@ -13,6 +13,8 @@ tags:
 
 # Instructions
 
+---
+
 ## Docker Compose
 
 ```yaml
@@ -51,6 +53,8 @@ networks:
     external: true
 ```
 
-> Sources:
-> [GitHub - Difegue/LANraragi: Web application for archival and reading of manga/doujinshi. Lightweight and Docker-ready for NAS/servers.](https://github.com/Difegue/LANraragi)
-> [LANraragi Documentation | LANraragi](https://sugoi.gitbook.io/lanraragi/v/dev)
+---
+
+## Sources
+- [GitHub - Difegue/LANraragi: Web application for archival and reading of manga/doujinshi. Lightweight and Docker-ready for NAS/servers.](https://github.com/Difegue/LANraragi)
+- [LANraragi Documentation | LANraragi](https://sugoi.gitbook.io/lanraragi/v/dev)

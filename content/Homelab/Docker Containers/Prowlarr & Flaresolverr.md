@@ -15,7 +15,9 @@ tags:
 
 # Instructions
 
-## 1. Prowlarr
+---
+
+## Prowlarr
 
 ### Docker Compose
 ```yaml title="containers/prowlarr/docker-compose.yml"
@@ -55,11 +57,13 @@ networks:
     external: true
 ```
 
-> Sources:
-> [prowlarr - LinuxServer.io](https://docs.linuxserver.io/images/docker-prowlarr/)
-> [Prowlarr | Servarr Wiki](https://wiki.servarr.com/prowlarr)
+### Sources
+- [prowlarr - LinuxServer.io](https://docs.linuxserver.io/images/docker-prowlarr/)
+- [Prowlarr | Servarr Wiki](https://wiki.servarr.com/prowlarr)
 
-## 2. Flaresolverr
+---
+
+## Flaresolverr
 
 ### Docker Compose
 ```yaml title="containers/prowlarr/docker-compose.yml"
@@ -90,6 +94,6 @@ networks:
 Use TRaSH Guides
 [How to setup FlareSolverr - TRaSH Guides](https://trash-guides.info/Prowlarr/prowlarr-setup-flaresolverr/)
 
-> Sources:
-> [GitHub - FlareSolverr/FlareSolverr: Proxy server to bypass Cloudflare protection](https://github.com/FlareSolverr/FlareSolverr)
-> [How to setup FlareSolverr - TRaSH Guides](https://trash-guides.info/Prowlarr/prowlarr-setup-flaresolverr/)
+### Sources
+- [GitHub - FlareSolverr/FlareSolverr: Proxy server to bypass Cloudflare protection](https://github.com/FlareSolverr/FlareSolverr)
+- [How to setup FlareSolverr - TRaSH Guides](https://trash-guides.info/Prowlarr/prowlarr-setup-flaresolverr/)

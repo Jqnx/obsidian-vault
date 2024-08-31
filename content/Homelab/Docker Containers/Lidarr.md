@@ -14,6 +14,8 @@ tags:
 
 # Instructions
 
+---
+
 ## Docker Compose
 
 ```yaml title="containers/jellyfin/docker-compose.yml"
@@ -61,6 +63,8 @@ networks:
 
 ```
 
-> Sources:
-> [lidarr - LinuxServer.io](https://docs.linuxserver.io/images/docker-lidarr/)
-> [Lidarr | Servarr Wiki](https://wiki.servarr.com/lidarr)
+---
+
+## Sources
+- [lidarr - LinuxServer.io](https://docs.linuxserver.io/images/docker-lidarr/)
+- [Lidarr | Servarr Wiki](https://wiki.servarr.com/lidarr)

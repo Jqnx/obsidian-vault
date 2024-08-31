@@ -15,17 +15,20 @@ tags:
 
 # Instructions
 
-## 1. Portainer
+---
+
+## Portainer
 
 ### Docker Compose
 ```yaml containers/portainer/docker-compose.yml
 ```
 
-> Sources:
-> 
+### Sources
+- temp
 
+---
 
-## 2. Portainer Agent
+## Portainer Agent
 
 ### Docker Compose
 ```yaml containers/portainer-agent/docker-compose.yml
@@ -46,5 +49,5 @@ services:
       - com.centurylinklabs.watchtower.enable=true
 ```
 
-> Sources:
-> [Install Portainer Agent on Docker Standalone | Portainer Documentation](https://docs.portainer.io/admin/environments/add/docker/agent)
+### Sources
+- [Install Portainer Agent on Docker Standalone | Portainer Documentation](https://docs.portainer.io/admin/environments/add/docker/agent)

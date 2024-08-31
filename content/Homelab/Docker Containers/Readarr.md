@@ -14,7 +14,9 @@ tags:
 
 # Instructions
 
-## 1. Docker Compose
+---
+
+## Docker Compose
 ```yaml title="containers/calibre/docker-compose.yml"
 ---
 services:
@@ -56,6 +58,8 @@ networks:
     external: true
 ```
 
-> Sources:
-> [readarr - LinuxServer.io](https://docs.linuxserver.io/images/docker-readarr/)
-> [Readarr | Servarr Wiki](https://wiki.servarr.com/readarr)
+---
+
+## Sources
+- [readarr - LinuxServer.io](https://docs.linuxserver.io/images/docker-readarr/)
+- [Readarr | Servarr Wiki](https://wiki.servarr.com/readarr)

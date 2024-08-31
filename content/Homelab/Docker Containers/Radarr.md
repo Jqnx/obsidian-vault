@@ -14,6 +14,8 @@ tags:
 
 # Instructions
 
+---
+
 ## Docker Compose
 
 ```yaml title="containers/jellyfin/docker-compose.yml"
@@ -67,6 +69,9 @@ networks:
 Use TRaSH Guides
 [Radarr - TRaSH Guides](https://trash-guides.info/Radarr/#radarr)
 
-> Sources:
-> [radarr - LinuxServer.io](https://docs.linuxserver.io/images/docker-radarr/)
-> [Radarr | Servarr Wiki](https://wiki.servarr.com/radarr)
+---
+
+## Sources
+- [radarr - LinuxServer.io](https://docs.linuxserver.io/images/docker-radarr/)
+- [Radarr | Servarr Wiki](https://wiki.servarr.com/radarr)
+- [Radarr - TRaSH Guides](https://trash-guides.info/Radarr/#radarr)

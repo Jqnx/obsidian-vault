@@ -15,7 +15,9 @@ tags:
 
 # Instructions
 
-## 1. Pterodactyl Panel
+---
+
+## Pterodactyl Panel
 
 ### Docker Compose
 
@@ -117,12 +119,13 @@ networks:
     external: true
 ```
 
-> Sources:
-> [I Built the PERFECT Game Server with Pterodactyl and Docker - YouTube](https://www.youtube.com/watch?v=_ypAmCcIlBE)
-> [I Built the PERFECT Game Server with Pterodactyl and Docker | Techno Tim](https://technotim.live/posts/pterodactyl-game-server/)
-> [Introduction | Pterodactyl](https://pterodactyl.io/project/introduction.html)
-> [GitHub - pelican-eggs/eggs: Service eggs for the pterodactyl panel](https://github.com/pelican-eggs/eggs)
+### Sources
+- [I Built the PERFECT Game Server with Pterodactyl and Docker - YouTube](https://www.youtube.com/watch?v=_ypAmCcIlBE)
+- [I Built the PERFECT Game Server with Pterodactyl and Docker | Techno Tim](https://technotim.live/posts/pterodactyl-game-server/)
+- [Introduction | Pterodactyl](https://pterodactyl.io/project/introduction.html)
+- [GitHub - pelican-eggs/eggs: Service eggs for the pterodactyl panel](https://github.com/pelican-eggs/eggs)
 
+---
 
 ## Pterodactyl Wings
 
@@ -134,7 +137,7 @@ networks:
 #todo 
 - [ ] pterodactyl wings documentation
 
-> Sources:
-> [I Built the PERFECT Game Server with Pterodactyl and Docker - YouTube](https://www.youtube.com/watch?v=_ypAmCcIlBE)
-> [I Built the PERFECT Game Server with Pterodactyl and Docker | Techno Tim](https://technotim.live/posts/pterodactyl-game-server/)
-> [Introduction | Pterodactyl](https://pterodactyl.io/project/introduction.html)
+## Sources
+- [I Built the PERFECT Game Server with Pterodactyl and Docker - YouTube](https://www.youtube.com/watch?v=_ypAmCcIlBE)
+- [I Built the PERFECT Game Server with Pterodactyl and Docker | Techno Tim](https://technotim.live/posts/pterodactyl-game-server/)
+- [Introduction | Pterodactyl](https://pterodactyl.io/project/introduction.html)

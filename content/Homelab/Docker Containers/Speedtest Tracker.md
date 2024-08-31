@@ -13,7 +13,9 @@ tags:
 
 # Instructions
 
-## 1. Docker Compose
+---
+
+## Docker Compose
 
 ```yaml title="containers/speedtest-tracker/docker-compose.yml"
 ---
@@ -53,7 +55,9 @@ networks:
     external: true
 ```
 
-> Sources:
-> [Introduction | Speedtest Tracker](https://docs.speedtest-tracker.dev/)
-> [GitHub - alexjustesen/speedtest-tracker](https://github.com/alexjustesen/speedtest-tracker)
-> [speedtest-tracker - LinuxServer.io](https://docs.linuxserver.io/images/docker-speedtest-tracker/)
+---
+
+## Sources
+- [Introduction | Speedtest Tracker](https://docs.speedtest-tracker.dev/)
+- [GitHub - alexjustesen/speedtest-tracker](https://github.com/alexjustesen/speedtest-tracker)
+- [speedtest-tracker - LinuxServer.io](https://docs.linuxserver.io/images/docker-speedtest-tracker/)

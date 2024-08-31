@@ -14,6 +14,8 @@ tags:
 
 # Instructions
 
+---
+
 ## Docker Compose
 ```yaml title="containers/calibre/docker-compose.yml"
 ---
@@ -73,6 +75,8 @@ networks:
     external: true
 ```
 
-> Sources:
-> [calibre - LinuxServer.io](https://docs.linuxserver.io/images/docker-calibre/)
-> [calibre-web - LinuxServer.io](https://docs.linuxserver.io/images/docker-calibre-web/)
+---
+
+## Sources
+- [calibre - LinuxServer.io](https://docs.linuxserver.io/images/docker-calibre/)
+- [calibre-web - LinuxServer.io](https://docs.linuxserver.io/images/docker-calibre-web/)

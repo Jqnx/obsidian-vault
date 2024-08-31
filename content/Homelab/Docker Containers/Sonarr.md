@@ -14,6 +14,8 @@ tags:
 
 # Instructions
 
+---
+
 ## Docker Compose
 
 ```yaml title="containers/jellyfin/docker-compose.yml"
@@ -67,6 +69,8 @@ networks:
 Use TRaSH Guides
 [Sonarr - TRaSH Guides](https://trash-guides.info/Sonarr/#sonarr)
 
-> Sources:
-> [sonarr - LinuxServer.io](https://docs.linuxserver.io/images/docker-sonarr/)
-> [Sonarr | Servarr Wiki](https://wiki.servarr.com/sonarr)
+---
+
+## Sources
+- [sonarr - LinuxServer.io](https://docs.linuxserver.io/images/docker-sonarr/)
+- [Sonarr | Servarr Wiki](https://wiki.servarr.com/sonarr)

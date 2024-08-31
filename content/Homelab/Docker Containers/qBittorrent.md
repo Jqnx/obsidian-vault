@@ -13,6 +13,8 @@ tags:
 
 # Instructions
 
+---
+
 ## Docker Compose
 
 ```yaml
@@ -64,9 +66,12 @@ networks:
     external: true
 ```
 
-> Sources:
-> [hotio/qbittorrent - hotio.dev](https://hotio.dev/containers/qbittorrent/)
-
 ## Setup
 Use TRaSH Guides
 [Basic-Setup - TRaSH Guides](https://trash-guides.info/Downloaders/qBittorrent/Basic-Setup/#qbittorrent-basic-setup)
+
+---
+
+## Sources
+- [hotio/qbittorrent - hotio.dev](https://hotio.dev/containers/qbittorrent/)
+- [Basic-Setup - TRaSH Guides](https://trash-guides.info/Downloaders/qBittorrent/Basic-Setup/#qbittorrent-basic-setup)

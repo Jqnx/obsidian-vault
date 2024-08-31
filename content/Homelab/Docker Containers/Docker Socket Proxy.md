@@ -17,7 +17,9 @@ tags:
 
 # Instructions
 
-## 1. Docker Compose
+---
+
+## Docker Compose
 ```yaml title="containers/socket-proxy/docker-compose.yml"
 ---
 services:
@@ -81,8 +83,8 @@ networks:
     external: true
 ```
 
+---
 
-
->Sources:
->[GitHub - Tecnativa/docker-socket-proxy: Proxy over your Docker socket to restrict which requests it accepts](https://github.com/Tecnativa/docker-socket-proxy)
->[socket-proxy - LinuxServer.io](https://docs.linuxserver.io/images/docker-socket-proxy/)
+## Sources
+- [GitHub - Tecnativa/docker-socket-proxy: Proxy over your Docker socket to restrict which requests it accepts](https://github.com/Tecnativa/docker-socket-proxy)
+- [socket-proxy - LinuxServer.io](https://docs.linuxserver.io/images/docker-socket-proxy/)

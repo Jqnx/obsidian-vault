@@ -16,7 +16,9 @@ tags:
 
 # Instructions
 
-## 1. Docker Compose
+---
+
+## Docker Compose
 
 ```yaml title="containers/watchtower/docker-compose.yml"
 ---
@@ -44,5 +46,7 @@ networks:
     external: true
 ```
 
-> Sources:
-> [Watchtower](https://containrrr.dev/watchtower/)
+---
+
+## Sources
+- [Watchtower](https://containrrr.dev/watchtower/)

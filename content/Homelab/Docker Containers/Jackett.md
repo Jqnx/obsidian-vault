@@ -14,7 +14,9 @@ tags:
 
 # Instructions
 
-## 1. Docker Compose
+---
+
+## Docker Compose
 ```yaml title="containers/jackett/docker-compose.yml"
 ---
 services:
@@ -52,5 +54,7 @@ networks:
     external: true
 ```
 
-> Sources:
-> [jackett - LinuxServer.io](https://docs.linuxserver.io/images/docker-jackett/)
+---
+
+## Sources
+- [jackett - LinuxServer.io](https://docs.linuxserver.io/images/docker-jackett/)

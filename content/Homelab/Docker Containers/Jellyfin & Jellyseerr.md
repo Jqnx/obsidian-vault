@@ -14,7 +14,9 @@ tags:
 
 # Instructions
 
-## 1. Jellyfin
+---
+
+## Jellyfin
 
 ### Docker Compose
 ```yaml title="containers/jellyfin/docker-compose.yml"
@@ -52,10 +54,6 @@ networks:
   proxy:
     external: true
 ```
-
-> Sources:
-> [jellyfin - LinuxServer.io](https://docs.linuxserver.io/images/docker-jellyfin/)
-> [Jellyfin](https://jellyfin.org/docs/)
 
 ### Custom Configuration
 #todo 
@@ -102,10 +100,14 @@ networks:
 .pageTitleWithLogo { background-image: url(https://i.imgur.com/jOad6DO.png) !important; }
 ```
 
-> Sources:
-> [GitHub - CTalvio/Ultrachromic: The final form, the true evolution of the chromic theme saga!](https://github.com/CTalvio/Ultrachromic)
+### Sources
+- [GitHub - CTalvio/Ultrachromic: The final form, the true evolution of the chromic theme saga!](https://github.com/CTalvio/Ultrachromic)
+- [jellyfin - LinuxServer.io](https://docs.linuxserver.io/images/docker-jellyfin/)
+- [Jellyfin](https://jellyfin.org/docs/)
 
-## 2. Jellyseerr
+---
+
+## Jellyseerr
 
 ### Docker Compose
 ```yaml title="containers/jellyfin/docker-compose.yml"
@@ -144,5 +146,5 @@ networks:
     external: true
 ```
 
-> Sources:
-> [GitHub - Fallenbagel/jellyseerr: Fork of overseerr for jellyfin support](https://github.com/Fallenbagel/jellyseerr)
+### Sources
+- [GitHub - Fallenbagel/jellyseerr: Fork of overseerr for jellyfin support](https://github.com/Fallenbagel/jellyseerr)
