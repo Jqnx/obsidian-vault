@@ -12,13 +12,22 @@ tags:
   - dionysus
   - pnode
   - oracle
+  - hermes
+  - aphrodite
+---
+
+# Introduction
+Watchtower is a container-based solution for automating Docker container base image updates.
+
 ---
 
 # Instructions
 
----
+## Pre-requisites
+- [[Docker Socket Proxy]]
 
-## Docker Compose
+
+## 1. Docker Compose
 
 ```yaml title="containers/watchtower/docker-compose.yml"
 ---
@@ -45,6 +54,12 @@ networks:
   socket:
     external: true
 ```
+
+> [!tip]
+> Enable watchtower monitoring on containers using the following label:
+> ```yaml
+> com.centurylinklabs.watchtower.enable=true
+> ```
 
 ---
 
