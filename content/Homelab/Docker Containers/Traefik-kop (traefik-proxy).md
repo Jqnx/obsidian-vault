@@ -10,13 +10,41 @@ tags:
   - traefik-kop
   - dionysus
   - pnode
+  - aphrodite
+---
+
+# Introduction
+A dynamic docker->redis->traefik discovery agent.
+
+Solves the problem of running a non-Swarm/Kubernetes multi-host cluster with a single public-facing traefik instance.
+
+```
+                        +---------------------+          +---------------------+
+                        |                     |          |                     |
++---------+     :443    |  +---------+        |   :8088  |  +------------+     |
+|   WAN   |--------------->| traefik |<-------------------->| svc-nginx  |     |
++---------+             |  +---------+        |          |  +------------+     |
+                        |       |             |          |                     |
+                        |  +---------+        |          |  +-------------+    |
+                        |  |  redis  |<-------------------->| traefik-kop |    |
+                        |  +---------+        |          |  +-------------+    |
+                        |             docker1 |          |             docker2 |
+                        +---------------------+          +---------------------+
+```
+
+`traefik-kop` solves this problem by using the same `traefik` docker-provider logic. It reads the container labels from the local docker node and publishes them to a given `redis` instance. Simply configure your `traefik` node with a `redis` provider and point it to the same instance, as in the diagram above.
+
+
 ---
 
 # Instructions
 
----
+## Pre-requisites
+- [[Infrastructure & Docker Networks]]
+- [[Docker Socket Proxy]]
+- #todo [[traefik]]
 
-## Traefik Configuration
+## 1. Traefik Configuration
 Add `redis` to traefik providers
 ```yaml title="containers/traefik/data/traefik.yml"
 providers:
@@ -25,14 +53,12 @@ providers:
       - "traefik-redis:6379"
 ```
 
----
-
-## Docker Compose
+## 2. Docker Compose
 ```yaml title="containers/traefik-kop/docker-compose.yml"
 ---
 services:
   traefik-kop:
-    image: ghcr.io/jittering/traefik-kop:latest
+    image: ghcr.io/jittering/traefik-kop:0.14
     container_name: traefik-kop
     restart: unless-stopped
     networks:
