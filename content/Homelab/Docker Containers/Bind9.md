@@ -10,19 +10,23 @@ tags:
   - bind9
   - dns
   - hermes
+  - terraform
+---
+
+# Introduction
+BIND (Berkeley Internet Name Domain) is a complete, highly portable implementation of the Domain Name System (DNS) protocol.
+
+The BIND name server, `named`, can act as an authoritative name server, recursive resolver, DNS forwarder, or all three simultaneously. It implements views for split-horizon DNS, automatic DNSSEC zone signing and key management, catalog zones to facilitate provisioning of zone data throughout a name server constellation, response policy zones (RPZ) to protect clients from malicious data, response rate limiting (RRL) and recursive query limits to reduce distributed denial of service attacks, and many other advanced DNS features. BIND also includes a suite of administrative tools, including the `dig` and `delv` DNS lookup tools, `nsupdate` for dynamic DNS zone updates, `rndc` for remote name server administration, and more.
+
 ---
 
 # Instructions
-
----
 
 ## Pre-requisites
 - [[Watchtower]]
 - Disabled port 53 (if using ubuntu-server)
 
----
-
-## Docker Compose
+## 1. Docker Compose
 ```yaml title="containers/bind/docker-compose.yml"
 ---
 services:
@@ -54,9 +58,7 @@ networks:
         - subnet: 172.31.0.0/16
 ```
 
----
-
-## Permissions
+## 2. Permissions
 Give the volumes the following permissions:
 ```bash
 sudo chown -R root:bind /etc/bind/
@@ -80,9 +82,7 @@ sudo chown -R 101:101 /var/lib/bind
 > bind:x:101:101::/var/cache/bind:/usr/sbin/nologin
 > ```
 
----
-
-## Custom Config
+## 3. Custom Config
 
 ### named.conf.key
 First create `tsig-key` using the following command: 
