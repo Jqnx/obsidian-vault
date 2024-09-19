@@ -1,10 +1,9 @@
 files on different applications?
 maybe files on system setup aswell
 
-Containers
+## Containers
 #todo 
 - [ ]  wizarr
-- [ ]  vikunja
 - [ ]  dockge
 - [ ]  firefly
 - [ ]  firefly importer
@@ -12,12 +11,13 @@ Containers
 - [ ]  LinguaCafe
 - [ ]  zitadel
 - [ ]  piAlert
+- [ ] [Docusaurus](https://noted.lol/docusaurus/)
 
-Systems
+## Systems
 #todo 
 - [ ]  logrotate
 
-authelia basic auth
+## authelia basic auth
 #todo 
 - [ ] jackett
 - [ ] readarr
@@ -87,3 +87,12 @@ bat --> install.conf.yaml & docs
  tmux --> install.conf.yaml & documentation
  neovim --> docs
  btop --> install.conf.yaml & docs
+
+# Update Docs
+- [Glance](https://github.com/glanceapp/glance)
+- btop
+- fish
+- lazygit
+- bat
+- tmux
+- neovim
