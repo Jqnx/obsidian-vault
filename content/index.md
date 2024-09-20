@@ -1,19 +1,9 @@
 ---
-title: Welcome to Quartz
+title: Home
 ---
 
-This is a blank Quartz installation.
-See the [documentation](https://quartz.jzhao.xyz) for how to get started.
+![[https://www.pngall.com/wp-content/uploads/2016/05/Red-Panda-Free-PNG-Image.png]]
 
-Is it working?
-
-> [!question]
-
-> [!info]
-
-> [!note]
-
-> [!tip]
-
-> [!warning]
-
+Welcome!
+This is mostly for personal documentation and notes.
+However, feel free to take a look around.
