@@ -2,7 +2,7 @@
 title: Home
 ---
 <div style="text-align: center;">
-![penguin](https://img.lovepik.com/element/40164/6822.png_1200.png)
+<img src="https://img.lovepik.com/element/40164/6822.png_1200.png"/>
 </div>
 
 Welcome!
