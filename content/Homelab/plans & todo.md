@@ -1,3 +1,9 @@
+---
+title: plans & todo
+draft: true
+tags:
+  - 
+---
 files on different applications?
 maybe files on system setup aswell
 
