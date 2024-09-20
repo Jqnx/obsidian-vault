@@ -1,8 +1,9 @@
 ---
 title: Home
 ---
-
-![[https://www.pngall.com/wp-content/uploads/2016/05/Red-Panda-Free-PNG-Image.png]]
+<div style="text-align: center;">
+![penguin](https://img.lovepik.com/element/40164/6822.png_1200.png)
+</div>
 
 Welcome!
 This is mostly for personal documentation and notes.
