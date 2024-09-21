@@ -1,8 +1,8 @@
 ---
 title: FTPS Mikrotik
-draft: true
+draft: false
 tags:
-  - school
+  - encora
   - beveiliging
   - filezilla
   - ftp

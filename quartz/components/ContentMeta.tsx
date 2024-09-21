@@ -29,12 +29,14 @@ export default ((opts?: Partial<ContentMetaOptions>) => {
     if (text) {
       const segments: (string | JSX.Element)[] = []
 
-      if (fileData.dates) {
-        segments.push(formatDate(getDate(cfg, fileData)!, cfg.locale))
+      if (fileData.dates && fileData.slug !== "index") {
+        //segments.push(formatDate(getDate(cfg, fileData)!, cfg.locale))
+        segments.push("Created: " + formatDate(fileData.dates.created))
+        segments.push("Modified: " + formatDate(fileData.dates.modified))
       }
 
       // Display reading time if enabled
-      if (options.showReadingTime) {
+      if (options.showReadingTime && fileData.slug !== "index") {
         const { minutes, words: _words } = readingTime(text)
         const displayedTime = i18n(cfg.locale).components.contentMeta.readingTime({
           minutes: Math.ceil(minutes),

@@ -2,7 +2,7 @@
 title: Project Docker en Kubernetes
 draft: false
 tags:
-  - school
+  - encora
   - project
   - linux
   - docker

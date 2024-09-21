@@ -1,8 +1,8 @@
 ---
 title: NAS
-draft: true
+draft: false
 tags:
-  - school
+  - encora
   - randapparatuur
   - windows
   - NAS

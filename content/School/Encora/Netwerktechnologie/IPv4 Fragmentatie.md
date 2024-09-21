@@ -2,7 +2,7 @@
 title: IPv4 Fragmentatie
 draft: false
 tags:
-  - school
+  - encora
   - netwerktechnologie
   - networking
   - ipv4
@@ -13,8 +13,8 @@ IP Fragmentatie zorgt ervoor dat je IP-pakket verdeeld wordt in kleinere deeltje
 
 Je pakket wordt pas echt gefragmenteerd al voldoet het aan de volgende voorwaarden:
 - Het is groter dan de MTU
-- De waarde van de [DF bit](IPv4#Flags) in de IP header.
-De [MF of More Fragment](IPv4#Flags) bit is altijd 1 buiten bij het laatste fragment.
+- De waarde van de [DF bit](IPv4.md#Flags) in de IP header.
+De [MF of More Fragment](IPv4.md#Flags) bit is altijd 1 buiten bij het laatste fragment.
  
 ---
 ## Data grootte berekenen

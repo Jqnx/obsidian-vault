@@ -2,7 +2,7 @@
 title: HomeAssistant
 draft: false
 tags:
-  - school
+  - encora
   - onderhoud-en-herstellingen
   - homeassistantos
   - duckdns

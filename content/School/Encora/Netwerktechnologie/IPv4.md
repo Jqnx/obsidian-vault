@@ -2,7 +2,7 @@
 title: IPv4
 draft: false
 tags:
-  - school
+  - encora
   - netwerktechnologie
   - networking
   - ipv4

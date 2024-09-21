@@ -1,3 +1,14 @@
+---
+title: Shared Folders
+draft: false
+date created: 2024-09-21T00:49:38
+date modified: 2024-09-21T17:13:35
+tags:
+  - encora
+  - computer-besturingssystemen-1
+  - windows
+---
+
 # **COMPUTER BESTURINGSYSTEMEN 1**
 
 ## Shared Folders
