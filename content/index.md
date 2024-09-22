@@ -46,22 +46,21 @@ Feel free to take a look around.
 
 ## 🖥️ Homelab
 - [[Infrastructure & Docker Networks]]
-- #proxmox 
-- [[Homelab/Docker Containers/|Docker Containers]]
 - [[Tools]]
+- [[Homelab/Docker Containers/ | Docker Containers]]
 
 ## 🧠 Learning
 
 ## 📚 School
 
 ### Encora
-- [[School/Encora/CBS1/|Computer Besturingssystemen 1 (Windows)]]
+- [[School/Encora/CBS1/ | Computer Besturingssystemen 1 (Windows)]]
 - Basis Netwerken
-- [[School/Encora/CAT/|Computer Assemblage]]
-- [[School/Encora/RA/|Randapparatuur]]
-- [[School/Encora/Netwerktechnologie/|Netwerktechnologie]]
+- [[School/Encora/CAT/ | Computer Assemblage]]
+- [[School/Encora/RA/ | Randapparatuur]]
+- [[School/Encora/Netwerktechnologie/ | Netwerktechnologie]]
 - Computer Besturingssystemen 2 (Linux)
-- [[School/Encora/OH/|Onderhoud en Herstellingen]]
+- [[School/Encora/OH/ | Onderhoud en Herstellingen]]
 - Draadloze Netwerken
-- [[School/Encora/BEV/|Beveiliging]]
-- [[School/Encora/Project/|Project]]
+- [[School/Encora/BEV/ | Beveiliging]]
+- [[School/Encora/Project/ | Project]]
