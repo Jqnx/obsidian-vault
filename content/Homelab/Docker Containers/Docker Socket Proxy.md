@@ -4,20 +4,25 @@ draft: false
 tags:
   - homelab
   - linux
-  - ubuntu
   - docker
-  - docker-compose
-  - docker-networks
+  - docker/compose
+  - docker/networks
   - socket-proxy
   - omoikane
   - dionysus
   - pnode
   - oracle
+date modified: 2024-09-30T00:35:11+02:00
+date created: 2024-09-22T17:42:44+02:00
 ---
 
 # Instructions
 
----
+## Docker Network
+Create our docker network
+```shell
+docker network create socket
+```
 
 ## Docker Compose
 ```yaml title="containers/socket-proxy/docker-compose.yml"

@@ -1,11 +1,17 @@
 ---
-title: plans & todo
+title: ideas
 draft: true
-tags:
-  - 
+tags: 
+date modified: 2024-09-28T21:55:55+02:00
+date created: 2024-09-22T17:42:44+02:00
 ---
 files on different applications?
 maybe files on system setup aswell
+
+# Ideas
+
+## selfhosted git-lab/gitea
+`gitlab/gitea` on `cloud vm` connection through `netbird vpn`
 
 ## Containers
 #todo 

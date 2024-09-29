@@ -4,13 +4,15 @@ draft: false
 tags:
   - homelab
   - linux
-  - ubuntu
   - docker
-  - docker-compose
+  - docker/compose
+  - docker/networks
   - traefik-kop
   - dionysus
   - pnode
   - aphrodite
+date modified: 2024-09-30T00:34:10+02:00
+date created: 2024-09-22T17:42:44+02:00
 ---
 
 # Introduction
@@ -40,22 +42,48 @@ Solves the problem of running a non-Swarm/Kubernetes multi-host cluster with a s
 # Instructions
 
 ## Pre-requisites
-- [[Infrastructure & Docker Networks]]
 - [[Docker Socket Proxy]]
-- #todo [[traefik]]
+- [[Traefik]]
 
-## 1. Traefik Configuration
+## Traefik Configuration
+
+Add `redis` to traefik's docker-compose file:
+```yaml title="traefik/docker-compose.yml"
+services:
+	...
+	redis:
+	  image: docker.io/library/redis:alpine
+	  command: --save 60 1 --loglevel warning
+	  restart: unless-stopped
+	  container_name: traefik-redis
+	  networks:
+	    - proxy
+	  ports:
+	    - 6379:6379
+	  volumes:
+	    - ~/containers/traefik/data/redis/:/data
+...
+```
+
+Apply changes to the stack
+```shell
+docker compose up -d
+```
+
 Add `redis` to traefik providers
 ```yaml title="containers/traefik/data/traefik.yml"
+...
 providers:
+  ...
   redis:
     endpoints:
       - "traefik-redis:6379"
+...
 ```
 
-## 2. Docker Compose
+## Docker Compose
+
 ```yaml title="containers/traefik-kop/docker-compose.yml"
----
 services:
   traefik-kop:
     image: ghcr.io/jittering/traefik-kop:0.14
