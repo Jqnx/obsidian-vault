@@ -11,7 +11,7 @@ tags:
   - reverse-proxy
   - omoikane
   - oracle
-date modified: 2024-09-30T00:35:55+02:00
+date modified: 2024-09-30T01:01:09+02:00
 date created: 2024-09-22T17:42:44+02:00
 ---
 
@@ -68,7 +68,7 @@ echo $(htpasswd -nB user) | sed -e s/\\$/\\$\\$/g
 ```
 
 Change the example password with your generated password:
-```title=".env"
+```toml title=".env"
 DDN=example.com # change to your domain name
 TRAEFIK_DASHBOARD_CREDENTIALS=user:$$2y$$05$$lSaEi.G.aIygyXRdiFpt7OqmUMW9QUG5I1N.j0bXoXxIjxQmoGOWu # swap with generated password
 ```
@@ -76,7 +76,7 @@ TRAEFIK_DASHBOARD_CREDENTIALS=user:$$2y$$05$$lSaEi.G.aIygyXRdiFpt7OqmUMW9QUG5I1N
 ## Cloudflare API Token
 
 Generate an API token for your zone [here](https://dash.cloudflare.com/profile/api-tokens).
-```title="cf_api_token.txt"
+```toml title="cf_api_token.txt"
 PASTE_TOKEN_HERE
 ```
 
@@ -376,7 +376,7 @@ Add following labels to your docker-compose file:
 > >        - traefik.http.routers.${TRAEFIK_SERVICE_NAME}.rule=Host(`${TRAEFIK_HOST}`)
 > > ...
 > > ```
-> > ```title=".env"
+> > ```toml title=".env"
 > > TRAEFIK_SERVICE_NAME=nginx
 > > TRAEFIK_SERVICE_PORT=80
 > > TRAEFIK_HOST=nginx.example.com

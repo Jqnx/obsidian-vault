@@ -2,7 +2,7 @@
 title: Tools
 draft: false
 date created: 2024-09-21T21:51:37+02:00
-date modified: 2024-09-22T17:41:47+02:00
+date modified: 2024-09-30T00:49:26+02:00
 tags:
   - homelab
   - tools
@@ -77,5 +77,5 @@ tags:
 ## Notifications
 - Gotify
 
-## Web Server
+## Reverse Proxy
 - [[Traefik | Traefik]]
